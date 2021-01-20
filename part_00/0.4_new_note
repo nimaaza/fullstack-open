@@ -2,14 +2,15 @@ title creating new note
 
 browser->server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
 note right of server: receive and process the new note
-server->browser: Text/HTML & redirect browser to /notes
+server->browser: redirect browser to /notes
 browser->server: GET https://studies.cs.helsinki.fi/exampleapp/notes
 server->browser: HTML for /notes
 browser->server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
 server->browser: main.css
 browser->server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
 server->browser: main.js
-note left of browser: execute the JS script (receive updated notes from server)
+note left of browser: execute the JS script to receive updated notes from server
 browser->server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
 server->browser: Application/JSON data
+note left of browser: process received notes and list them
 
