@@ -1,0 +1,12 @@
+title opening the single-page application
+
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+server->browser: Text/HTML
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server->browser: main.css
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server->browser: spa.js
+note left of browser: execute the JS script (receive notes from server)
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server->browser: Application/JSON data
+

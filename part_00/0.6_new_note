@@ -1,0 +1,7 @@
+title creating note in single-page application
+
+browser->server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note right of server: receive and process the new note in JSON
+server->browser: Status 201 Created
+note left of browser: add the new note to notes list
+
