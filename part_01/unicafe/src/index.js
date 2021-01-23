@@ -7,6 +7,10 @@ const Statistics = ({good, neutral, bad}) => {
   const all = good + neutral + bad;
   const noVotesMessage = '-';
 
+  if (all === 0) {
+    return (<p>No feedback given.</p>);
+  }
+
   return (
     <div>
       <h1>Statistics</h1>
