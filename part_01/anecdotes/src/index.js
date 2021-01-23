@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
+const Display = ({title, anecdote, votes}) => {
+  return (
+    <div>
+      <h1>{title}</h1>
+      <p>{anecdote}</p>
+      <p>has {votes} votes </p>
+    </div>
+  );
+};
+
 const Button = ({onClick, text}) =>
   (<button onClick={onClick}>{text}</button>);
 
@@ -19,12 +29,25 @@ const App = (props) => {
     setPoints(newPoints);
   };
 
+  let max = points[0];
+  let maxIndex = 0;
+
+  points.forEach((point, index) => {
+      if (point > max) {
+        max = point;
+        maxIndex = index;
+      }
+    }
+  );
+
   return (
     <div>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {points[selected]} votes </p>
+      <Display title='Anecdote of the day' anecdote={props.anecdotes[selected]} votes={points[selected]} />
+
       <Button onClick={vote} text='vote' />
       <Button onClick={setNextAnecdote} text='next anecdote' />
+
+      <Display title='Anecdote with most votes' anecdote={props.anecdotes[maxIndex]} votes={points[maxIndex]} />
     </div>
   );
 };
