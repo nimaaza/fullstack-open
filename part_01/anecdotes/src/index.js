@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-const Button = ({onClick, text}) => (
-  <div>
-    <button onClick={onClick}>{text}</button>
-  </div>
-);
+const Button = ({onClick, text}) =>
+  (<button onClick={onClick}>{text}</button>);
 
 const App = (props) => {
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(new Array(props.anecdotes.length).fill(0));
 
   const setNextAnecdote = () => {
-    const nextAnecdote = Math.floor(Math.random() * anecdotes.length);
+    const nextAnecdote = Math.floor(Math.random() * props.anecdotes.length);
     setSelected(nextAnecdote);
+  };
+
+  const vote = () => {
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
   };
 
   return (
     <div>
-      {props.anecdotes[selected]}
-
+      <p>{props.anecdotes[selected]}</p>
+      <p>has {points[selected]} votes </p>
+      <Button onClick={vote} text='vote' />
       <Button onClick={setNextAnecdote} text='next anecdote' />
     </div>
   );
