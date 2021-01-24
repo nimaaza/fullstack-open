@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 const notes = [
   {
@@ -20,26 +20,28 @@ const notes = [
     date: '2019-05-30T19:20:14.298Z',
     important: true
   }
-]
+];
 
-const App = (props) => {
-  const { notes } = props
+const Note = ({ note }) => {
+  return (
+    <li>
+      {note.content}
+    </li>
+  );
+};
 
+const App = ({ notes }) => {
   return (
     <div>
       <h1>Notes</h1>
       <ul>
-        {notes.map(note => 
-          <li key={note.id}>
-            {note.content}
-          </li>
-        )}
+        {notes.map(note => <Note key={note.id} note={note} />)}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 ReactDOM.render(
   <App notes={notes} />,
   document.getElementById('root')
-)
+);
