@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const Total = ({ parts }) => {
+  const sum = parts.reduce((total, part) => total + part.exercises, 0);
+  return (<h3>total of {sum} exercises</h3>);
+}
+
 const Header = ({ name }) => <h1>{name}</h1>;
 
 const Part = ({ part }) => <p>{part.name} {part.exercises}</p>;
@@ -11,6 +16,7 @@ const Course = ({ course }) => (
   <div>
     <Header name={course.name} />
     <Content parts={course.parts} />
+    <Total parts={course.parts} />
   </div>
 );
 
@@ -33,6 +39,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   };
