@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import Filter from './components/Filter';
 import Form from './components/Form';
 import DisplayPersons from './components/DisplayPersons';
+
+import personServices from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    personServices
+      .all()
+      .then(persons => setPersons(persons));
+  }, []);
 
   const formActionListeners = {
     nameValueChange: event => setNewName(event.target.value),
@@ -24,22 +31,15 @@ const App = () => {
       }
 
       const person = { name: newName, number: newNumber };
-      axios
-        .post('http://localhost:3001/persons', person)
-        .then(response => {
-          setPersons(persons.concat(response.data));
+      personServices
+        .add(person)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
-        }
-      );
+        });
     }
   };
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data));
-  }, []);
 
   const filterValueChange = event => setFilter(event.target.value.trim());
 
