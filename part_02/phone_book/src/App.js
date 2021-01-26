@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Filter from './components/Filter';
 import Form from './components/Form';
-import DisplayPersons from './components/DisplayPersons';
+import DisplayPerson from './components/DisplayPerson';
 
 import personServices from './services/persons';
 
@@ -43,6 +43,20 @@ const App = () => {
 
   const filterValueChange = event => setFilter(event.target.value.trim());
 
+  const deleteNumberHandler = (id) => {
+    return () => {
+      const person = persons.find(person => person.id === id);
+      if (!window.confirm(`Really delete ${person.name}?`)) return;
+
+      personServices
+        .del(id)
+        .then(() => {
+          const newPersons = persons.filter(person => person.id !== id);
+          setPersons(newPersons);
+        });
+    };
+  };
+
   const personsToShow =
     persons.filter(person =>
       person.name.toLowerCase().includes(filter.toLowerCase()));
@@ -61,7 +75,12 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <DisplayPersons persons={personsToShow} />
+      {personsToShow.map(person =>
+        <DisplayPerson
+          key={person.name}
+          name={person.name}
+          number={person.number}
+          deleteNumberHandler={deleteNumberHandler(person.id)} />)}
     </div>
   );
 };

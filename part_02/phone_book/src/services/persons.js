@@ -12,4 +12,8 @@ const add = (person) =>
     .post(baseURL, person)
     .then(response => response.data);
 
-export default { all, add };
+const del = (id) =>
+  axios
+    .delete(`${baseURL}/${id}`);
+
+export default { all, add, del };
