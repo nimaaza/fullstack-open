@@ -25,19 +25,30 @@ const App = () => {
       event.preventDefault();
 
       if (newName.trim().length === 0) return;
-      if (persons.find(person => person.name === newName)) {
-        alert(`${newName} is already in the phonebook!`);
-        return;
+
+      const person = persons.find(person => person.name === newName);
+
+      if (person) {
+        if (window.confirm(`${newName} is already in the phonebook! Update number?`)) {
+          const newPerson = { ...person, number: newNumber };
+          personServices
+            .update(newPerson)
+            .then(response => {
+              const newPersons = persons.map(person => person.id === response.id ? response : person);
+              setPersons(newPersons);
+            });
+        }
+      } else {
+        const newPerson = { name: newName, number: newNumber };
+        personServices
+          .add(newPerson)
+          .then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson));
+          });
       }
 
-      const person = { name: newName, number: newNumber };
-      personServices
-        .add(person)
-        .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson));
-          setNewName('');
-          setNewNumber('');
-        });
+      setNewName('');
+      setNewNumber('');
     }
   };
 
