@@ -16,16 +16,22 @@ const App = () => {
     numberValueChange: event => setNewNumber(event.target.value),
     addName: event => {
       event.preventDefault();
-      
+
       if (newName.trim().length === 0) return;
       if (persons.find(person => person.name === newName)) {
         alert(`${newName} is already in the phonebook!`);
         return;
       }
-      
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName('');
-      setNewNumber('');
+
+      const person = { name: newName, number: newNumber };
+      axios
+        .post('http://localhost:3001/persons', person)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+          setNewName('');
+          setNewNumber('');
+        }
+      );
     }
   };
 
