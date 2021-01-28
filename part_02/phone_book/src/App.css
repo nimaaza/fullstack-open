@@ -1,9 +1,18 @@
-.notification {
-  color: green;
+.message {
   background-color: gainsboro;
   padding: 1em;
   width: 50%;
-  border: 4px solid green;
+  border: 4px solid;
   border-radius: 16px;
   text-align: center;
+}
+
+.error {
+  color: red;
+  border-color: red;
+}
+
+.notification {
+  color: green;
+  border-color: green;
 }

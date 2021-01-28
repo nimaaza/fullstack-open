@@ -14,7 +14,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState([null, false]);
 
   useEffect(() => {
     personServices
@@ -40,7 +40,7 @@ const App = () => {
             .then(response => {
               const newPersons = persons.map(person => person.id === response.id ? response : person);
               setPersons(newPersons);
-              setNotification(`Phone number of ${person.name} successfully updated!`);
+              setNotification([`Phone number of ${person.name} successfully updated!`, false]);
             });
         }
       } else {
@@ -49,7 +49,7 @@ const App = () => {
           .add(newPerson)
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson));
-            setNotification(`New phone number for ${newPerson.name} successfully added!`);
+            setNotification([`New phone number for ${newPerson.name} successfully added!`, false]);
           });
       }
 
@@ -70,7 +70,9 @@ const App = () => {
         .then(() => {
           const newPersons = persons.filter(person => person.id !== id);
           setPersons(newPersons);
-          setNotification(`Phone number of ${person.name} deleted!`);
+          setNotification([`Phone number of ${person.name} deleted!`, true]);
+        }).catch(error => {
+          setNotification([`Information for this person does not exist on the server!`, true])
         });
     };
   };
@@ -79,13 +81,13 @@ const App = () => {
     persons.filter(person =>
       person.name.toLowerCase().includes(filter.toLowerCase()));
 
-  setTimeout(() => {setNotification(null)}, 6000);
+  setTimeout(() => {setNotification([null, false])}, 10000);
 
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <Notification notification={notification} />
+      <Notification notification={notification[0]} error={notification[1]} />
 
       <Filter filter={filter} filterValueChange={filterValueChange} />
 
