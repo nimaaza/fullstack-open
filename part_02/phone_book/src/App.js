@@ -3,14 +3,18 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import Form from './components/Form';
 import DisplayPerson from './components/DisplayPerson';
+import Notification from './components/Notification';
 
 import personServices from './services/persons';
+
+import './App.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personServices
@@ -36,6 +40,7 @@ const App = () => {
             .then(response => {
               const newPersons = persons.map(person => person.id === response.id ? response : person);
               setPersons(newPersons);
+              setNotification(`Phone number of ${person.name} successfully updated!`);
             });
         }
       } else {
@@ -44,6 +49,7 @@ const App = () => {
           .add(newPerson)
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson));
+            setNotification(`New phone number for ${newPerson.name} successfully added!`);
           });
       }
 
@@ -64,6 +70,7 @@ const App = () => {
         .then(() => {
           const newPersons = persons.filter(person => person.id !== id);
           setPersons(newPersons);
+          setNotification(`Phone number of ${person.name} deleted!`);
         });
     };
   };
@@ -72,9 +79,13 @@ const App = () => {
     persons.filter(person =>
       person.name.toLowerCase().includes(filter.toLowerCase()));
 
+  setTimeout(() => {setNotification(null)}, 6000);
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification notification={notification} />
 
       <Filter filter={filter} filterValueChange={filterValueChange} />
 
