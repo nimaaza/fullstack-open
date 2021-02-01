@@ -27,6 +27,9 @@ let persons = [
   }
 ];
 
+const isNameAlreadyTaken = (person) =>
+  persons.find(p => p.name === person.name);
+
 app.get('/info', (request, response) => {
   const html = `<p>Phonebook has info for ${persons.length} people </p>
                 <p>${(new Date()).toString()}</p>`;
@@ -54,6 +57,18 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const person = request.body;
   person.id = Math.floor(Math.random() * 10000);
+
+  if (!person.name || !person.number) {
+    return response.status(400).json({
+      error: 'name or number missing'
+    });
+  }
+
+  if (isNameAlreadyTaken(person)) {
+    return response.status(400).json({
+      error: 'name is already take'
+    });
+  }
 
   persons = persons.concat(person);
 
