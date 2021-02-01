@@ -4,7 +4,21 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
-app.use(morgan('tiny'));
+app.use(morgan((tokens, request, response) => {
+  let logMessage = [
+    tokens.method(request, response),
+    tokens.url(request, response),
+    tokens.status(request, response),
+    tokens.res(request, response, 'content-length'), '-',
+    tokens['response-time'](request, response), 'ms'
+  ];
+
+  if (tokens.method(request, response) === 'POST') {
+    logMessage.push(JSON.stringify(request.body));
+  }
+
+  return logMessage.join(' ');
+}));
 
 let persons = [
   {
