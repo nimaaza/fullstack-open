@@ -1,0 +1,1 @@
+DELETE https://stark-gorge-38605.herokuapp.com/api/persons/7251
