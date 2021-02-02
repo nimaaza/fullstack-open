@@ -1,9 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(morgan((tokens, request, response) => {
   let logMessage = [
     tokens.method(request, response),
@@ -45,6 +47,10 @@ let persons = [
 
 const isNameAlreadyTaken = (person) =>
   persons.find(p => p.name === person.name);
+
+app.get('/api/persons', (request, response) => {
+  response.json(persons);
+});
 
 app.get('/info', (request, response) => {
   const html = `<p>Phonebook has info for ${persons.length} people </p>
