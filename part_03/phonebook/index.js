@@ -4,7 +4,6 @@ const express = require('express');
 const Person = require('./models/person');
 const cors = require('cors');
 const morgan = require('morgan');
-const { request, response } = require('express');
 
 const app = express();
 
@@ -40,14 +39,24 @@ const errorHandler = (error, request, response, next) => {
 const isNameAlreadyTaken = (person) =>
   persons.find(p => p.name === person.name);
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(persons => response.json(persons));
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then(persons => response.json(persons))
+    .catch(error => next(error));
 });
 
-app.get('/info', (request, response) => {
-  const html = `<p>Phonebook has info for ${persons.length} people </p>
-                <p>${(new Date()).toString()}</p>`;
-  response.send(html);
+app.get('/info', (request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      const length = persons.length;
+      const date = (new Date()).toString();
+    
+      const html = `<p>Phonebook has info for ${length} people </p>
+                    <p>${date}</p>`;
+      
+      response.send(html);
+    })
+    .catch(error => next(error));
 });
 
 app.get('/api/persons/:id', (request, response, next) => {
