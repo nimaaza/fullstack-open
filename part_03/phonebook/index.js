@@ -54,7 +54,6 @@ const isNameAlreadyTaken = (person) =>
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => response.json(persons));
-  // response.json(persons);
 });
 
 app.get('/info', (request, response) => {
@@ -82,24 +81,18 @@ app.delete('/api/persons/:id', (request, response) => {
 });
 
 app.post('/api/persons', (request, response) => {
-  const person = request.body;
-  person.id = Math.floor(Math.random() * 10000);
-
-  if (!person.name || !person.number) {
+  if (!request.body.name || !request.body.number) {
     return response.status(400).json({
       error: 'name or number missing'
     });
   }
 
-  if (isNameAlreadyTaken(person)) {
-    return response.status(400).json({
-      error: 'name is already take'
-    });
-  }
+  const person = new Person({
+    name: request.body.name,
+    number: request.body.number
+  });
 
-  persons = persons.concat(person);
-
-  response.json(person);
+  person.save().then(person => response.json(person));
 });
 
 const PORT = process.env.PORT;
