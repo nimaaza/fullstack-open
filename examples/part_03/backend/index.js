@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const Note = require('./models/note');
-const { response } = require('express');
 
 const app = express();
 
@@ -50,13 +49,6 @@ app.get('/api/notes/:id', (request, response, next) => {
     .catch(error => next(error));
 });
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter(note => note.id !== id);
-
-  response.status(204).end();
-});
-
 app.post('/api/notes', (request, response) => {
   const body = request.body;
 
@@ -75,11 +67,25 @@ app.post('/api/notes', (request, response) => {
   note.save().then(savedNote => response.json(savedNote));
 });
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.delete('/api/notes/:id', (request, response) => {
+  Note.findByIdAndRemove(request.params.id)
+    .then(result => response.status(204).end())
+    .catch(error => next(error));
 });
 
+app.put('/api/notes/:id', (request, response, next) => {
+  const note = {
+    content: request.body.content,
+    important: request.body.important
+  };
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then(updatedNote => response.json(updatedNote))
+    .catch(error => next(error));
+});
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
