@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const Note = require('./models/note');
+const { response } = require('express');
 
 const app = express();
 
@@ -14,16 +15,30 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+const errorHandler = (erro, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformed id' });
+  }
+
+  next(error);
+};
+
 app.use(express.static('build'));
 app.use(express.json());
-app.use(cors());
 app.use(requestLogger);
+app.use(cors());
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => response.json(notes));
 });
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
     .then(note => {
       if (note) {
@@ -32,10 +47,7 @@ app.get('/api/notes/:id', (request, response) => {
         response.status(404).end();
       }
     })
-    .catch(error => {
-      console.log(error);
-      response.status(400).send({ error: 'malformed id' });
-    });
+    .catch(error => next(error));
 });
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -68,8 +80,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
 
 app.use(unknownEndpoint);
+app.use(errorHandler);
