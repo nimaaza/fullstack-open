@@ -1,0 +1,14 @@
+{
+  "name": "commandline_db",
+  "version": "0.0.1",
+  "description": "A command line database program to add new names and numbers to the phonebook database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nima Azarbayjani",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^5.11.15"
+  }
+}
