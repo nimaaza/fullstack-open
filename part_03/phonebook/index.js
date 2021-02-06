@@ -32,7 +32,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformed id' });
   } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: 'data validation failed' });
+    return response.status(400).send({ error: error.message });
   }
 
   next(error);
@@ -52,10 +52,10 @@ app.get('/info', (request, response, next) => {
     .then(persons => {
       const length = persons.length;
       const date = (new Date()).toString();
-    
+
       const html = `<p>Phonebook has info for ${length} people </p>
                     <p>${date}</p>`;
-      
+
       response.send(html);
     })
     .catch(error => next(error));
@@ -96,7 +96,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: request.body.number
   };
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => response.json(updatedPerson))
     .catch(error => next(error));
 });

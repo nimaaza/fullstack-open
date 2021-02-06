@@ -41,7 +41,8 @@ const App = () => {
               const newPersons = persons.map(person => person.id === response.id ? response : person);
               setPersons(newPersons);
               setNotification([`Phone number of ${person.name} successfully updated!`, false]);
-            });
+            })
+            .catch(error => setNotification([error.response.data.error, true]));
         }
       } else {
         const newPerson = { name: newName, number: newNumber };
@@ -50,7 +51,8 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson));
             setNotification([`New phone number for ${newPerson.name} successfully added!`, false]);
-          });
+          })
+          .catch(error => setNotification([error.response.data.error, true]));
       }
 
       setNewName('');
