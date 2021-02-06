@@ -18,7 +18,7 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
 
-const errorHandler = (erro, request, response, next) => {
+const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
   if (error.name === 'CastError') {
@@ -65,7 +65,7 @@ app.post('/api/notes', (request, response, next) => {
     .catch(error => next(error));
 });
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => response.status(204).end())
     .catch(error => next(error));
