@@ -1,0 +1,24 @@
+{
+  "name": "notes",
+  "version": "0.0.1",
+  "description": "learn proper Node.js project structure and testing",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nima Azarbayjani",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.15"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "nodemon": "^2.0.7"
+  }
+}
