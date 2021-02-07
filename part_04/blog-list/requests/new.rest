@@ -9,6 +9,7 @@ Content-Type: application/json
 }
 
 ###
+
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -18,3 +19,15 @@ Content-Type: application/json
   "url": "http://www.mrnice.com/blog/12",
   "likes": 144
 }
+
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Try to have fun",
+  "author": "Mr. Nice",
+  "url": "http://www.mrnice.com/blog/14",
+  "likes": 173}
+  
