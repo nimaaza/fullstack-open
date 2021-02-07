@@ -1,0 +1,17 @@
+{
+  "name": "testing",
+  "version": "0.0.1",
+  "description": "learn testing in Node.js apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "author": "Nima Azarbayjani",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
