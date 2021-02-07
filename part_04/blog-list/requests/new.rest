@@ -1,0 +1,20 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Helpful tips",
+  "author": "Mr. Nice",
+  "url": "http://www.mrnice.com/blog/12",
+  "likes": 112
+}
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Seven things to learn",
+  "author": "Mr. Nice",
+  "url": "http://www.mrnice.com/blog/12",
+  "likes": 144
+}
