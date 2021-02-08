@@ -151,3 +151,29 @@ describe('author with most blogs', () => {
       });
   });
 });
+
+describe('author with most likes', () => {
+  test('handle empty list of blogs', () => {
+    expect(listHelper.mostLikes([]))
+      .toEqual({
+        author: undefined,
+        likes: undefined,
+      });
+  });
+
+  test('return correct response when only one author exists', () => {
+    expect(listHelper.mostLikes(listWithOneBlog))
+      .toEqual({
+        author: 'Edsger W. Dijkstra',
+        likes: 5,
+      });
+  });
+
+  test('return the correct author with most likes in a larger list', () => {
+    expect(listHelper.mostLikes(blogs))
+      .toEqual({
+        author: 'Mr. Nice',
+        likes: 429,
+      });
+  });
+});
