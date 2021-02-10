@@ -33,6 +33,22 @@ test('the unique identifier id exists for blog items', async () => {
   expect(blog.id).toBeDefined();
 });
 
+test('a valid blog can be added', async () => {
+  const blog = new Blog({
+    title: 'New interesting blog post',
+    author: 'Mr. Authormann',
+    url: 'http://www.authors.org',
+    likes: 207,
+  });
+
+  await blog.save();
+  const blogs = (await api.get('/api/blogs')).body;
+  const titles = blogs.map(blog => blog.title);
+
+  expect(blogs).toHaveLength(helper.blogs.length + 1);
+  expect(titles).toContain('New interesting blog post');
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
