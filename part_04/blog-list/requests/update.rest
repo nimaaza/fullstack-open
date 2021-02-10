@@ -1,0 +1,10 @@
+PUT http://localhost:3003/api/blogs/601fa9277f31e518453f2ba2
+Content-Type: application/json
+
+{
+  "_id": "601fa9277f31e518453f2ba2",
+  "title": "Helpful tips",
+  "author": "Mr. Nice",
+  "url": "http://www.mrnice.com/blog/12",
+  "likes": 112
+}

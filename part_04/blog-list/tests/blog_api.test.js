@@ -35,7 +35,7 @@ describe('test proper returing of the blogs', () => {
   });
 });
 
-describe('test proper adding of blogs', () => {
+describe('test proper adding and updating of blogs', () => {
   test('a valid blog can be added', async () => {
     const blog = new Blog({
       title: 'New interesting blog',
@@ -75,6 +75,20 @@ describe('test proper adding of blogs', () => {
     await api.post('/api/blogs')
       .send(blog)
       .expect(400);
+  });
+
+  test('allows changing the number of likes for a post', async () => {
+    const blogs = (await api.get('/api/blogs')).body;
+    const blog = blogs[Math.floor(Math.random() * blogs.length)];
+
+    blog.likes += 1;
+    await api
+      .put(`/api/blogs/${blog.id}`)
+      .send(blog);
+
+    const blogsAfterUpdating = (await api.get('/api/blogs')).body;
+    const blogAfterUpdating = blogsAfterUpdating.find(b => b.id === blog.id);
+    expect(blogAfterUpdating.likes).toBe(blog.likes);
   });
 });
 
