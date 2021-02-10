@@ -23,8 +23,14 @@ test('returns the blogs in JSON format', async () => {
 });
 
 test('returns the right number of blogs', async () => {
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(helper.blogs.length);
+  const blogs = await api.get('/api/blogs');
+  expect(blogs.body).toHaveLength(helper.blogs.length);
+});
+
+test('the unique identifier id exists for blog items', async () => {
+  const blogs = await api.get('/api/blogs');
+  const blog = blogs.body[Math.floor(Math.random() * blogs.body.length)];
+  expect(blog.id).toBeDefined();
 });
 
 afterAll(() => {
