@@ -63,6 +63,17 @@ test('a blog without a value of likes is saved with 0 likes', async () => {
   expect(savedBlog.likes).toBe(0);
 });
 
+test('respond with 400 Bad Request if title and url are missing', async () => {
+  const blog = {
+    author: 'Mr. Authormann',
+    likes: 11,
+  };
+
+  await api.post('/api/blogs')
+    .send(blog)
+    .expect(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
