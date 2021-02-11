@@ -5,3 +5,25 @@ Content-Type: application/json
   "content": "VS Code Rest Client extention is cool.",
   "important": false
 }
+
+###
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+  "content": "VS Code Rest Client extention is cool.",
+  "important": false,
+  "user": "6024ee3ac880370aa2fa34fd"
+}
+
+###
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+  "content": "A third time: VS Code Rest Client extention is cool.",
+  "important": false,
+  "user": "6024ee3ac880370aa2fa34fd"
+}
