@@ -27,3 +27,14 @@ Content-Type: application/json
   "important": false,
   "user": "6024ee3ac880370aa2fa34fd"
 }
+
+### create new note with token
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MDI0ZWU1Y2M4ODAzNzBhYTJmYTM0ZmUiLCJpYXQiOjE2MTMxMTE4MDF9.oV5kRgTnyXO2yz1oODPpLlD_Vld2mkw10myJouzmDVg
+
+{
+  "content": "New note with login enabled using token",
+  "important": true
+}
