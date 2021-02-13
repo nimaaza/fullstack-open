@@ -29,5 +29,17 @@ Content-Type: application/json
   "title": "Try to have fun",
   "author": "Mr. Nice",
   "url": "http://www.mrnice.com/blog/14",
-  "likes": 173}
-  
+  "likes": 173
+}
+
+### create blog with user ID
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Interesting subject",
+  "author": "Interstingson",
+  "url": "http://intersting.blog/",
+  "likes": 10,
+  "user": "6027ed0005eb8e67eb48559c"
+}
