@@ -11,13 +11,9 @@ blogsRouter.post('/', async (request, response) => {
     request.body.likes = 0;
   }
 
-  if (!request.body.title || !request.body.url) {
-    response.status(400).end();
-  } else {
-    const blog = new Blog(request.body);
-    const savedBlog = await blog.save();
-    response.json(savedBlog);
-  }
+  const blog = new Blog(request.body);
+  const savedBlog = await blog.save();
+  response.json(savedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
