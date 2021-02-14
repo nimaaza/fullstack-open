@@ -95,6 +95,27 @@ describe('test proper adding and updating of blogs', () => {
     expect(titles).toContain('New interesting blog just added for testing, have fun!');
   });
 
+  test('adding blog without providing a token should fails', async () => {
+    const blog = {
+      title: 'New interesting blog just added for testing, have fun!',
+      author: 'Mr. Authormann',
+      url: 'http://www.authors.org',
+      likes: 207,
+    };
+
+    const blogsBefore = await Blog.find({});
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAfter = await Blog.find({});
+
+    expect(blogsBefore).toHaveLength(blogsAfter.length);
+  });
+
   test('a blog without a value of likes is saved with 0 likes', async () => {
     const blog = {
       title: 'New blog with no likes saved for testing',

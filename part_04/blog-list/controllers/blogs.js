@@ -57,7 +57,6 @@ blogsRouter.delete('/:id', async (request, response) => {
     });
   }
 
-  // await Blog.findByIdAndRemove(request.params.id);
   await blog.remove();
   response.status(204).end();
 });
