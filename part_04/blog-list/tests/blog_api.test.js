@@ -3,16 +3,36 @@ const supertest = require('supertest');
 
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./helper');
 
 const api = supertest(app);
 
 jest.setTimeout(10000);
 
+const getLoginToken = async (username, password) => {
+  const response = await api
+    .post('/api/login')
+    .send({ username, password });
+
+  return response.body.token;
+};
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   const blogsToSave = helper.blogs.map(blog => (new Blog(blog)).save());
   await Promise.all(blogsToSave);
+
+  await User.deleteMany({});
+  const user = {
+    username: 'root',
+    name: 'Nima',
+    password: '123456',
+  };
+
+  await api
+    .post('/api/users')
+    .send(user);
 });
 
 describe('test proper returing of the blogs', () => {
@@ -24,12 +44,18 @@ describe('test proper returing of the blogs', () => {
   });
 
   test('returns the right number of blogs', async () => {
-    const blogs = await api.get('/api/blogs');
+    const blogs = await api
+      .get('/api/blogs')
+      .expect(200);
+
     expect(blogs.body).toHaveLength(helper.blogs.length);
   });
 
   test('the unique identifier id exists for blog items', async () => {
-    const blogs = await api.get('/api/blogs');
+    const blogs = await api
+      .get('/api/blogs')
+      .expect(200);
+
     const blog = blogs.body[Math.floor(Math.random() * blogs.body.length)];
     expect(blog.id).toBeDefined();
   });
@@ -37,19 +63,27 @@ describe('test proper returing of the blogs', () => {
 
 describe('test proper adding and updating of blogs', () => {
   test('a valid blog can be added', async () => {
-    const blog = new Blog({
-      title: 'New interesting blog',
+    const blog = {
+      title: 'New interesting blog just added for testing, have fun!',
       author: 'Mr. Authormann',
       url: 'http://www.authors.org',
       likes: 207,
-    });
+    };
 
-    await blog.save();
+    const token = await getLoginToken('root', '123456');
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(blog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     const blogs = (await api.get('/api/blogs')).body;
     const titles = blogs.map(b => b.title);
 
     expect(blogs).toHaveLength(helper.blogs.length + 1);
-    expect(titles).toContain('New interesting blog');
+    expect(titles).toContain('New interesting blog just added for testing, have fun!');
   });
 
   test('a blog without a value of likes is saved with 0 likes', async () => {
@@ -59,7 +93,15 @@ describe('test proper adding and updating of blogs', () => {
       url: 'http://www.authors.org',
     };
 
-    await api.post('/api/blogs').send(blog);
+    const token = await getLoginToken('root', '123456');
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(blog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     const blogs = (await api.get('/api/blogs')).body;
     const savedBlog = blogs
       .find(b => b.title === 'New blog with no likes saved for testing');
@@ -72,7 +114,11 @@ describe('test proper adding and updating of blogs', () => {
       likes: 11,
     };
 
-    await api.post('/api/blogs')
+    const token = await getLoginToken('root', '123456');
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(blog)
       .expect(400);
   });
@@ -81,14 +127,19 @@ describe('test proper adding and updating of blogs', () => {
     const blogs = (await api.get('/api/blogs')).body;
     const blog = blogs[Math.floor(Math.random() * blogs.length)];
 
-    blog.likes += 1;
     await api
       .put(`/api/blogs/${blog.id}`)
-      .send(blog);
+      .send({
+        title: blog.title,
+        url: blog.url,
+        author: blog.author,
+        likes: blog.likes + 1,
+      });
 
     const blogsAfterUpdating = (await api.get('/api/blogs')).body;
     const blogAfterUpdating = blogsAfterUpdating.find(b => b.id === blog.id);
-    expect(blogAfterUpdating.likes).toBe(blog.likes);
+
+    expect(blogAfterUpdating.likes).toBe(blog.likes + 1);
   });
 });
 
