@@ -24,15 +24,24 @@ beforeEach(async () => {
   await Promise.all(blogsToSave);
 
   await User.deleteMany({});
-  const user = {
-    username: 'root',
-    name: 'Nima',
-    password: '123456',
-  };
 
   await api
     .post('/api/users')
-    .send(user);
+    .send({
+      username: 'root',
+      name: 'Nima',
+      password: '123456',
+    })
+    .expect(200);
+
+  await api
+    .post('/api/users')
+    .send({
+      username: 'nima',
+      name: 'Nima',
+      password: '123456',
+    })
+    .expect(200);
 });
 
 describe('test proper returing of the blogs', () => {
@@ -144,15 +153,91 @@ describe('test proper adding and updating of blogs', () => {
 });
 
 describe('test proper deletion of blogs', () => {
-  test('deletes one blog successfully', async () => {
-    const blogs = (await api.get('/api/blogs')).body;
-    const { id } = blogs[0];
+  test('deletes one blog successfully when owned by user', async () => {
+    const token = await getLoginToken('root', '123456');
+    const blog = {
+      title: 'testing for proper deletion of blogs',
+      author: 'Nima',
+      url: 'http://test.org',
+      likes: 100,
+    };
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(blog)
+      .expect(200);
+
+    const savedBlog = response.body;
+    const blogsBefore = await Blog.find({});
+
     await api
-      .delete(`/api/blogs/${id}`)
+      .delete(`/api/blogs/${savedBlog.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204);
 
-    const blogsAfterDeletion = (await api.get('/api/blogs')).body;
-    expect(blogsAfterDeletion).toHaveLength(helper.blogs.length - 1);
+    const blogsAfter = await Blog.find({});
+    const titlesAfter = blogsAfter.map(b => b.title);
+
+    expect(blogsAfter).toHaveLength(blogsBefore.length - 1);
+    expect(titlesAfter).not.toContain('testing for proper deletion of blogs');
+  });
+
+  test('deletion should fail if no token is provided', async () => {
+    const token = await getLoginToken('root', '123456');
+    const blog = {
+      title: 'testing for proper deletion of blog without token',
+      author: 'Nima',
+      url: 'http://test.org',
+      likes: 100,
+    };
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(blog)
+      .expect(200);
+
+    const savedBlog = response.body;
+    const blogsBefore = await Blog.find({});
+
+    await api
+      .delete(`/api/blogs/${savedBlog.id}`)
+      .expect(401);
+
+    const blogsAfter = await Blog.find({});
+    expect(blogsBefore).toHaveLength(blogsAfter.length);
+  });
+
+  test('deletion should fail for blogs not owned by user', async () => {
+    const tokenForRoot = await getLoginToken('root', '123456');
+    const blog = {
+      title: 'testing for proper deletion of blogs',
+      author: 'Nima',
+      url: 'http://test.org',
+      likes: 100,
+    };
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${tokenForRoot}`)
+      .send(blog)
+      .expect(200);
+
+    const savedBlog = response.body;
+    const blogsBefore = await Blog.find({});
+    const tokenForAnother = await getLoginToken('nima', '123456');
+
+    await api
+      .delete(`/api/blogs/${savedBlog.id}`)
+      .set('Authorization', `Bearer ${tokenForAnother}`)
+      .expect(401);
+
+    const blogsAfter = await Blog.find({});
+    const titlesAfter = blogsAfter.map(b => b.title);
+
+    expect(blogsAfter).toHaveLength(blogsBefore.length);
+    expect(titlesAfter).toContain('testing for proper deletion of blogs');
   });
 });
 
