@@ -20,34 +20,14 @@ const App = () => {
       .then(initialNotes => setNotes(initialNotes));
   }, []);
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username <input type="text"
-                          value={username}
-                          name="Username"
-                          onChange={({ target }) => setUsername(target.value)} />
-        </div>
-        <div>
-          password <input type="password"
-                          value={password}
-                          name="Password"
-                          onChange={({ target }) => setPassword(target.value)} />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    );
-  };
-
-  const noteForm = () => {
-    return (
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange}/>
-        <button type='submit'>save</button>
-      </form>
-    );
-  };
+  useEffect(() => {
+    const loggedInNoteAppUser = window.localStorage.getItem('loggedInNoteAppUser');
+    if (loggedInNoteAppUser) {
+      const user = JSON.parse(loggedInNoteAppUser);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []);
 
   const addNote = (event) => {
     event.preventDefault();
@@ -64,17 +44,22 @@ const App = () => {
         setNotes(notes.concat(returnedNote));
         setNewNote('');
       }
-    );
+      );
   };
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
+
     try {
       const user = await loginService.login({
         username,
         password,
       });
+
+      window.localStorage.setItem(
+        'loggedInNoteAppUser',
+        JSON.stringify(user),
+      );
 
       noteService.setToken(user.token);
       setUser(user);
@@ -84,6 +69,12 @@ const App = () => {
       setErrorMessage('Wrong credentials!');
       setTimeout(() => setErrorMessage(null), 5000);
     }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInNoteAppUser');
+    noteService.setToken('');
+    setUser(null);
   };
 
   const handleNoteChange = event => setNewNote(event.target.value);
@@ -104,6 +95,35 @@ const App = () => {
       });
   };
 
+  const loginForm = () => {
+    return (
+      <form onSubmit={handleLogin}>
+        <div>
+          username <input type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)} />
+        </div>
+        <div>
+          password <input type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)} />
+        </div>
+        <button type="submit">login</button>
+      </form>
+    );
+  };
+
+  const noteForm = () => {
+    return (
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={handleNoteChange} />
+        <button type='submit'>save</button>
+      </form>
+    );
+  };
+
   const notesToShow = showAll
     ? notes
     : notes.filter(note => note.important);
@@ -118,15 +138,18 @@ const App = () => {
         user === null
           ? loginForm()
           : <div>
-              <p>{user.name} logged in</p>
-              {noteForm()}
-            </div>
+            <p>
+              {user.name} logged in
+                <button onClick={handleLogout}>log out</button>
+            </p>
+            {noteForm()}
+          </div>
       }
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
-        </button> 
+        </button>
       </div>
 
       <ul>
