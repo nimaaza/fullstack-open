@@ -22,7 +22,7 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <form>
+      <form onSubmit={handleLogin}>
         <div>
           username <input type="text"
                           value={username}
@@ -76,6 +76,7 @@ const App = () => {
         password,
       });
 
+      noteService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
