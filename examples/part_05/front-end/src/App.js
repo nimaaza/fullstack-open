@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import Note from './components/Note';
 import Notification from './components/Notification';
 import Footer from './components/Footer';
+import NoteForm from './components/NoteForm';
 import LoginForm from './components/LoginForm';
 
 import noteService from './services/notes';
 import loginService from './services/login';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -100,34 +102,28 @@ const App = () => {
   };
 
   const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
-    const showWhenVisible = { display: loginVisible ? '' : 'none' };
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleLogin={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
+     return (
+      <Togglable>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleLogin={handleLogin}
+        />
+      </Togglable>
     );
   };
 
   const noteForm = () => {
     return (
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
-        <button type='submit'>save</button>
-      </form>
+      <Togglable buttonLabel="new note">
+        <NoteForm
+          handleOnSubmit={addNote}
+          value={newNote}
+          handleNoteChange={handleNoteChange}
+        />
+      </Togglable>
     );
   };
 
