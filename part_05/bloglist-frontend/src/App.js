@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
 import Blog from './components/Blog';
+import NewBlogForm from './components/NewBlogForm';
+import Togglable from './components/Togglable';
+
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -10,15 +14,9 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [notification, setNotification] = useState(null);
 
-  const showNotification = (message) => {
-    setNotification(message);
-    setTimeout(() => {setNotification(null)}, 5000);
-  };
+  const newBlogFormRef = useRef();
 
   useEffect(() => {
     const user = window.localStorage.getItem('loginUser');
@@ -33,6 +31,11 @@ const App = () => {
       .then(blogs => setBlogs(blogs));
   }, []);
 
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => { setNotification(null) }, 5000);
+  };
+
   const loginHandler = (event) => {
     event.preventDefault();
 
@@ -40,25 +43,25 @@ const App = () => {
       username,
       password,
     })
-    .then(data => {
-      window.localStorage.setItem('loginUser', JSON.stringify(data));
-      blogService.setToken(data.token);
-      setUser(data);
-      setUsername('');
-      setPassword('');
+      .then(data => {
+        window.localStorage.setItem('loginUser', JSON.stringify(data));
+        blogService.setToken(data.token);
+        setUser(data);
+        setUsername('');
+        setPassword('');
 
-      showNotification({
-        message: `welcome back ${data.name}`,
-        error: false,
+        showNotification({
+          message: `welcome back ${data.name}`,
+          error: false,
+        })
       })
-    })
-    .catch(error => {
-      console.error('login failed:', error);
-      showNotification({
-        message: `login failed: ${error.message}`,
-        error: true,
-      })
-    });
+      .catch(error => {
+        console.error('login failed:', error);
+        showNotification({
+          message: `login failed: ${error.message}`,
+          error: true,
+        })
+      });
   };
 
   const logoutHandler = (event) => {
@@ -71,14 +74,8 @@ const App = () => {
     setUser(null);
   };
 
-  const newBlogHandler = (event) => {
-    event.preventDefault();
-
-    const blog = {
-      title,
-      author,
-      url,
-    };
+  const createBlog = (blog) => {
+    newBlogFormRef.current.toggle();
 
     blogService
       .createNew(blog)
@@ -128,38 +125,18 @@ const App = () => {
     );
   };
 
-  const blogFormAndBlogs = () => {
+  const newBlogFormAndBlogs = () => {
     return (
       <div>
         <h2>Blogs</h2>
 
         <p>{user.name} logged in <button onClick={logoutHandler}>log out</button></p>
 
-        <h2>create new</h2>
-        <form onSubmit={newBlogHandler}>
-          <div>
-            title:
-            <input type="text" value={title} onChange={({ target }) => setTitle(target.value)} />
-          </div>
+        <Togglable buttonLable="create new" ref={newBlogFormRef}>
+          <NewBlogForm createBlog={createBlog} />
+        </Togglable>
 
-          <div>
-            author:
-            <input type="text" value={author} onChange={({ target }) => setAuthor(target.value)} />
-          </div>
-
-          <div>
-            url:
-            <input type="text" value={url} onChange={({ target }) => setUrl(target.value)} />
-          </div>
-
-          <div>
-            <input type="submit" value="create" />
-          </div>
-        </form>
-
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
       </div>
     );
   };
@@ -168,14 +145,16 @@ const App = () => {
     <div>
       {
         user
-          ? blogFormAndBlogs()
+          ? newBlogFormAndBlogs()
           : loginForm()
       }
 
-      {notification &&
+      {
+        notification &&
         <p className={notification.error ? 'message error' : 'message notification'}>
           {notification.message}
-        </p>}
+        </p>
+      }
     </div>
   );
 };
