@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 const blogsRouter = require('express').Router();
 const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog.js');
@@ -32,13 +34,13 @@ blogsRouter.post('/', async (request, response) => {
   }
 
   const user = await User.findById(token.id);
-  const blog = new Blog({ ...request.body, user: user._id });
+  const blog = new Blog({ ...request.body, user: user.id });
   const savedBlog = await blog.save();
 
   user.blogs = user.blogs.concat(savedBlog._id);
   await user.save();
 
-  response.json(savedBlog);
+  return response.json(savedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
@@ -57,8 +59,13 @@ blogsRouter.delete('/:id', async (request, response) => {
     });
   }
 
+  const user = await User.findById(token.id);
+  user.blogs = user.blogs.filter(b => b.toString() !== blog._id.toString());
+
   await blog.remove();
-  response.status(204).end();
+  await user.save();
+
+  return response.status(204).end();
 });
 
 blogsRouter.put('/:id', async (request, response) => {

@@ -6,11 +6,23 @@ const Blog = (props) => {
   const [blog, setBlog] = useState(props.blog);
   const [showDetails, setShowDetails] = useState(false);
 
-  const increaseLikes = (event) => {
-    const newBlog = { ...blog, likes: blog.likes + 1 };
-    blogService.updateBlog(newBlog);
-    setBlog(newBlog);
+  const increaseLikes = () => {
+    blogService
+      .updateBlog({ ...blog, likes: blog.likes + 1 })
+      .then(newBlog => setBlog(newBlog));
   };
+
+  const removeBlog = () => {
+    if (window.confirm('Really remove this blog?')) {
+      blogService
+        .deleteBlog(blog)
+        .then(() => setBlog(null));
+    }
+  };
+
+  if (!blog) {
+    return null;
+  }
 
   if (showDetails) {
     return (
@@ -19,6 +31,8 @@ const Blog = (props) => {
         {blog.url}
         <p>likes {blog.likes} <button onClick={increaseLikes}>like</button></p>
         {blog.author}
+        <br />
+        <button onClick={removeBlog}>remove</button>
       </div>
     );
   } else {

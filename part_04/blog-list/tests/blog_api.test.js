@@ -191,6 +191,7 @@ describe('test proper deletion of blogs', () => {
 
     const savedBlog = response.body;
     const blogsBefore = await Blog.find({});
+    const userBlogsBefore = (await User.findById(savedBlog.user)).blogs;
 
     await api
       .delete(`/api/blogs/${savedBlog.id}`)
@@ -198,10 +199,13 @@ describe('test proper deletion of blogs', () => {
       .expect(204);
 
     const blogsAfter = await Blog.find({});
+    const userBlogsAfter = (await User.findById(savedBlog.user)).blogs;
     const titlesAfter = blogsAfter.map(b => b.title);
 
     expect(blogsAfter).toHaveLength(blogsBefore.length - 1);
     expect(titlesAfter).not.toContain('testing for proper deletion of blogs');
+    expect(userBlogsAfter).toHaveLength(userBlogsBefore.length - 1);
+    expect(userBlogsAfter).not.toContain(savedBlog.id);
   });
 
   test('deletion should fail if no token is provided', async () => {

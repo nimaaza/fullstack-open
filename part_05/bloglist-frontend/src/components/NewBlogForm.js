@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 const NewBlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('1');
+  const [author, setAuthor] = useState('2');
+  const [url, setUrl] = useState('3');
 
   const newBlogHandler = (event) => {
     event.preventDefault();

@@ -28,9 +28,20 @@ const getAll = () => {
 };
 
 const updateBlog = (blog) => {
-  axios
+  blog.user = blog.user.id;
+  return axios
     .put(`${baseUrl}/${blog.id}`, blog)
     .then(response => response.data);
 };
 
-export default { getAll, createNew, updateBlog, setToken };
+const deleteBlog = (blog) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  blog.user = blog.user.id;
+  return axios
+    .delete(`${baseUrl}/${blog.id}`, config);
+};
+
+export default { setToken, getAll, createNew, updateBlog, deleteBlog };
