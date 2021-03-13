@@ -125,6 +125,8 @@ const App = () => {
     );
   };
 
+  const blogsToShow = blogs.sort((blog1, blog2) => blog1.likes < blog2.likes ? 1 : -1);
+
   const newBlogFormAndBlogs = () => {
     return (
       <div>
@@ -136,7 +138,7 @@ const App = () => {
           <NewBlogForm createBlog={createBlog} />
         </Togglable>
 
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+        {blogsToShow.map(blog => <Blog key={blog.id} blog={blog} />)}
       </div>
     );
   };
