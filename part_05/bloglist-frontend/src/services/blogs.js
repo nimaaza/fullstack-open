@@ -22,8 +22,15 @@ const createNew = (blog) => {
 }
 
 const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then(response => response.data);
+  return axios
+    .get(baseUrl)
+    .then(response => response.data);
 };
 
-export default { getAll, createNew, setToken };
+const updateBlog = (blog) => {
+  axios
+    .put(`${baseUrl}/${blog.id}`, blog)
+    .then(response => response.data);
+};
+
+export default { getAll, createNew, updateBlog, setToken };
