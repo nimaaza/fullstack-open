@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render } from '@testing-library/react';
+import { prettyDOM } from '@testing-library/dom';
 
 import Note from './Note';
 
@@ -13,6 +14,13 @@ test('renders content', () => {
   const component = render(
     <Note note={note} />
   );
+
+  // two ways of displaying HTML rendered by component
+  component.debug();
+
+  // or
+  const li = component.container.querySelector('li')
+  console.log(prettyDOM(li));
 
   // three different testing approaches for text content
   expect(component.container).toHaveTextContent(
