@@ -19,7 +19,7 @@ const createNew = (blog) => {
   return axios
     .post(baseUrl, blog, config)
     .then(response => response.data);
-}
+};
 
 const getAll = () => {
   return axios

@@ -53,18 +53,18 @@ const App = () => {
         showNotification({
           message: `welcome back ${data.name}`,
           error: false,
-        })
+        });
       })
       .catch(error => {
         console.error('login failed:', error);
         showNotification({
           message: `login failed: ${error.message}`,
           error: true,
-        })
+        });
       });
   };
 
-  const logoutHandler = (event) => {
+  const logoutHandler = () => {
     showNotification({
       message: `bye-bye ${user.name}`,
       error: false,

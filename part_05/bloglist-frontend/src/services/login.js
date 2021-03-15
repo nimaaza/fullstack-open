@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = '/api/login'
+const baseUrl = '/api/login';
 
 const login = (credentials) => {
   return axios

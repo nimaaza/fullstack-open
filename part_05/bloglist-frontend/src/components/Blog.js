@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import blogService from '../services/blogs'; 
+import blogService from '../services/blogs';
 
 const Blog = (props) => {
   const [blog, setBlog] = useState(props.blog);
