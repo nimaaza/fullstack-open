@@ -19,7 +19,7 @@ test('renders content', () => {
   component.debug();
 
   // or
-  const li = component.container.querySelector('li')
+  const li = component.container.querySelector('li');
   console.log(prettyDOM(li));
 
   // three different testing approaches for text content
