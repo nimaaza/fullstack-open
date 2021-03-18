@@ -30,7 +30,7 @@ const Blog = (props) => {
   if (showDetails) {
     return (
       <div className="blog-item">
-        <p>{blog.title} <button onClick={() => setShowDetails(false)}>hide</button></p>
+        <p>{blog.title} <button id="button-hide" onClick={() => setShowDetails(false)}>hide</button></p>
         {blog.url}
         <p>likes {blog.likes} <button onClick={increaseLikes}>like</button></p>
         {blog.author}
@@ -41,7 +41,7 @@ const Blog = (props) => {
   } else {
     return (
       <div>
-        <p>{blog.title} <button onClick={() => setShowDetails(true)}>view</button></p>
+        <p>{blog.title} <button id="button-view" onClick={() => setShowDetails(true)}>view</button></p>
       </div>
     );
   }
