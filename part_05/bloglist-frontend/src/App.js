@@ -33,7 +33,7 @@ const App = () => {
 
   const showNotification = (message) => {
     setNotification(message);
-    setTimeout(() => { setNotification(null) }, 5000);
+    setTimeout(() => setNotification(null), 5000);
   };
 
   const loginHandler = (event) => {
