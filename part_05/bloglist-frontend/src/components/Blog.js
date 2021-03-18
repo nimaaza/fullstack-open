@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -45,7 +47,7 @@ const Blog = (props) => {
   }
 };
 
-Blog.PropTypes = {
+Blog.propTypes = {
   blog: PropTypes.object.isRequired,
 };
 
