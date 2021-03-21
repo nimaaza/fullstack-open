@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 const config = require('./utils/config');
 
 const express = require('express');
@@ -35,6 +37,11 @@ app.use(middleware.requestLogger);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/notes', notesRouter);
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/test');
+  app.use('/api/testing', testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
