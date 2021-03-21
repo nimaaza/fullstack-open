@@ -11,7 +11,8 @@ const NoteForm = ({ createNote }) => {
     const note = {
       content: newNote,
       date: new Date().toISOString(),
-      important: Math.random() < 0.5,
+      // important: Math.random() < 0.5,
+      important: false,
     };
 
     createNote(note);
