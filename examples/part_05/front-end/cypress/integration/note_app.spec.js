@@ -46,11 +46,16 @@ describe('Note app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('log in').click();
-      cy.get('#username').type('root');
-      cy.get('#password').type('123456');
-      cy.get('#login-button').click();
-      cy.contains('Nima logged in');
+      // cy.contains('log in').click();
+      // cy.get('#username').type('root');
+      // cy.get('#password').type('123456');
+      // cy.get('#login-button').click();
+      // cy.contains('Nima logged in');
+
+      // The code above uses the UI to do the login, but
+      // the code below bypasses the UI in order to login.
+
+      cy.login({ username: 'root', password: '123456' });
     });
 
     it('a new note can be created', function () {
@@ -62,9 +67,10 @@ describe('Note app', function () {
 
     describe('and a note exists', function () {
       beforeEach(function () {
-        cy.contains('new note').click();
-        cy.get('input').type('another note from Cypress');
-        cy.contains('save').click();
+        cy.createNote({
+          content: 'another note from Cypress',
+          important: false,
+        });
       });
 
       it('can be made important', function () {
