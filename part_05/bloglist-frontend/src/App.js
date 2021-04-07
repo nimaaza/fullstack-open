@@ -19,16 +19,21 @@ const App = () => {
   const newBlogFormRef = useRef();
 
   useEffect(() => {
-    const user = window.localStorage.getItem('loginUser');
-    if (user) {
-      setUser(JSON.parse(user));
+    const storedUser = window.localStorage.getItem('loginUser');
+
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      blogService.setToken(parsedUser.token);
     }
   }, []);
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(blogs => setBlogs(blogs));
+    if (user) {
+      blogService
+        .getAll()
+        .then(blogs => setBlogs(blogs));
+    }
   }, []);
 
   const showNotification = (message) => {

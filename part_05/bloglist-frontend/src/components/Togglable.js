@@ -12,11 +12,12 @@ const Togglable = React.forwardRef((props, ref) => {
 
   const childrenVisibility = { display: visible ? '' : 'none' };
   const toggleButtonVisibility = { display: visible ? 'none' : '' };
+  const showButtonId = props.buttonLable.replace(/\s/g, '-');
 
   return (
     <div>
       <div style={toggleButtonVisibility}>
-        <button onClick={() => setVisibility(true)}>
+        <button id={showButtonId} onClick={() => setVisibility(true)}>
           {props.buttonLable}
         </button>
       </div>

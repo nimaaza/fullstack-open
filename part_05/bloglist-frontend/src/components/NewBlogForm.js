@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 const NewBlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('1');
-  const [author, setAuthor] = useState('2');
-  const [url, setUrl] = useState('3');
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const newBlogHandler = (event) => {
     event.preventDefault();
@@ -41,7 +41,7 @@ const NewBlogForm = ({ createBlog }) => {
         </div>
 
         <div>
-          <input type="submit" value="create" />
+          <input type="submit" id="input-create" value="create" />
         </div>
       </form>
     </div>
