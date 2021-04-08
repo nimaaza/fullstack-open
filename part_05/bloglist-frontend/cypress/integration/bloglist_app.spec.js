@@ -56,5 +56,21 @@ describe('Blog app', function () {
       cy.get('#input-create').click();
       cy.contains('new title');
     });
+
+    it('A blog can be liked', function () {
+      cy.addBlog({
+        title: 'a new blog',
+        author: 'cypress',
+        url: 'url.test',
+      });
+
+      cy.contains('a new blog')
+        .contains('view')
+        .click();
+
+      cy.contains('likes 0');
+      cy.contains('like').click();
+      cy.contains('likes 1');
+    });
   });
 });

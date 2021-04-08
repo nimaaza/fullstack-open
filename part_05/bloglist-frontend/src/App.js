@@ -19,17 +19,11 @@ const App = () => {
   const newBlogFormRef = useRef();
 
   useEffect(() => {
-    const storedUser = window.localStorage.getItem('loginUser');
+    const storedUser = JSON.parse(window.localStorage.getItem('loginUser'));
 
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      blogService.setToken(parsedUser.token);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
+      setUser(storedUser);
+      blogService.setToken(storedUser.token);
       blogService
         .getAll()
         .then(blogs => setBlogs(blogs));
