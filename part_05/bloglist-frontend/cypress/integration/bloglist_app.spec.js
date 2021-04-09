@@ -72,5 +72,20 @@ describe('Blog app', function () {
       cy.contains('like').click();
       cy.contains('likes 1');
     });
+
+    it('A user who has created a blog can delete it', function () {
+      cy.addBlog({
+        title: 'a new blog',
+        author: 'cypress',
+        url: 'url.test',
+      });
+
+      cy.contains('a new blog')
+        .contains('view')
+        .click();
+
+      cy.contains('remove').click();
+      cy.get('html').should('not.contain', 'a new blog');
+    });
   });
 });
