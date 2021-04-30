@@ -6,11 +6,14 @@ import BooksTable from './components/BooksTable';
 import BookForm from './components/BookForm';
 
 import { ALL_AUTHORS, ALL_BOOKS } from './queries';
+import BirthYearForm from './components/BirthYearForm';
+import Notify from './components/Notify';
 
 const App = () => {
   const [authors, setAuthors] = useState(null);
   const [books, setBooks] = useState(null);
   const [display, setDisplay] = useState('nothing');
+  const [message, setMessage] = useState(null);
 
   const [getAuthors, returnedAuthors] = useLazyQuery(ALL_AUTHORS);
   const [getBooks, returnedBooks] = useLazyQuery(ALL_BOOKS);
@@ -41,9 +44,19 @@ const App = () => {
     setDisplay('book_form');
   };
 
+  const displayMessage = (notification) => {
+    setMessage(notification);
+    setTimeout(() => setMessage(null), 6000);
+  };
+
   const displayData = () => {
     if (display === 'authors' && authors) {
-      return <AuthorsTable authors={authors} />
+      return (
+        <div>
+          <AuthorsTable authors={authors} />
+          <BirthYearForm notify={displayMessage} />
+        </div>
+      );
     }
 
     if (display === 'books' && books) {
@@ -59,6 +72,7 @@ const App = () => {
 
   return (
     <div>
+      <Notify message={message} />
       <button onClick={displayAuthors}>authors</button>
       <button onClick={displayBooks}>books</button>
       <button onClick={addBook}>add book</button>
