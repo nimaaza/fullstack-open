@@ -54,7 +54,7 @@ const App = () => {
       return (
         <div>
           <AuthorsTable authors={authors} />
-          <BirthYearForm notify={displayMessage} />
+          <BirthYearForm authors={authors} notify={displayMessage} />
         </div>
       );
     }
