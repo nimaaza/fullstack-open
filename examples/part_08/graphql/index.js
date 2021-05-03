@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const Person = require('./models/person');
-const user = require('./models/user');
+const User = require('./models/user');
 
 require('dotenv').config();
 
