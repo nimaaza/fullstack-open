@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
@@ -15,7 +17,6 @@ const App = () => {
   const [books, setBooks] = useState(null);
   const [display, setDisplay] = useState('nothing');
   const [message, setMessage] = useState(null);
-  const [genre, setGenre] = useState(null);
 
   const [getAuthors, returnedAuthors] = useLazyQuery(ALL_AUTHORS);
   const [getBooks, returnedBooks] = useLazyQuery(ALL_BOOKS);
@@ -30,9 +31,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (display === 'authors' && returnedAuthors.data && returnedAuthors.data.allAuthors) {
+    getAuthors();
+    getBooks();
+    if (returnedAuthors.data && returnedAuthors.data.allAuthors) {
       setAuthors(returnedAuthors.data.allAuthors);
-    } else if (display === 'books' && returnedBooks.data && returnedBooks.data.allBooks) {
+    }
+    if (returnedBooks.data && returnedBooks.data.allBooks) {
       setBooks(returnedBooks.data.allBooks);
     }
   }, [returnedAuthors.data, returnedBooks.data, display]);
@@ -47,57 +51,22 @@ const App = () => {
   };
 
   const displayAuthors = () => {
-    getAuthors();
-    setBooks(null);
     setDisplay('authors');
   };
 
   const displayBooks = () => {
-    getBooks();
-    setAuthors(null);
     setDisplay('books');
   }
 
-  const addBook = () => {
-    setAuthors(null);
-    setBooks(null);
-    setDisplay('book_form');
-  };
+  const addBook = () => setDisplay('book_form');
 
   const displayMessage = (notification) => {
     setMessage(notification);
     setTimeout(() => setMessage(null), 6000);
   };
 
-  const booksToDisplay = () => {
-    if (genre) {
-      return books.filter(book => book.genres.includes(genre));
-    }
-
-    return books;
-  };
-
-  const listOfGenres = () => {
-    if (books) {
-      const genres = ['All'];
-      books.forEach((book) => {
-        book.genres.forEach((genre) => {
-          if (!genres.includes(genre)) genres.push(genre);
-        })
-      });
-
-      return genres;
-    }
-
-    return [];
-  }
-
-  const selectGenreToDisplay = (genre) => {
-    if (genre === 'All') {
-      return () => setGenre(null);
-    }
-
-    return () => setGenre(genre);
+  const recommend = () => {
+    setDisplay('recommend');
   };
 
   const selectDisplay = () => {
@@ -110,7 +79,11 @@ const App = () => {
     }
 
     if (display === 'books' && books) {
-      return <BooksTable books={booksToDisplay()} />
+      return <BooksTable books={books} recommend={false} />
+    }
+
+    if (display === 'recommend' && books) {
+      return <BooksTable books={books} recommend={true} />
     }
 
     if (display === 'book_form') {
@@ -126,11 +99,10 @@ const App = () => {
       <button onClick={displayAuthors}>authors</button>
       <button onClick={displayBooks}>books</button>
       {token ? <button onClick={addBook}>add book</button> : <button onClick={login}>log in</button>}
+      {token ? <button onClick={recommend}>recommend</button> : null}
       {token ? <button onClick={logout}>log out</button> : null}
 
       {selectDisplay()}
-
-      {listOfGenres().map(genre => <button key={genre} onClick={selectGenreToDisplay(genre)}>{genre}</button>)}
     </div>
   );
 }
