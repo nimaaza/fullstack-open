@@ -123,6 +123,8 @@ const resolvers = {
       try {
         await book.save();
       } catch (error) {
+        author.bookCount -= 1;
+        await author.save();
         throw new UserInputError(error.message, {
           invalidArgs: args,
         });
@@ -162,7 +164,7 @@ const resolvers = {
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
 
-      if (!user || !args.password === 'secret') {
+      if (!user || !(args.password === 'secret')) {
         throw new UserInputError('wrong credentials');
       }
 

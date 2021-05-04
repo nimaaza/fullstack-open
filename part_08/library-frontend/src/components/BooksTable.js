@@ -1,4 +1,13 @@
 const BooksTable = ({ books }) => {
+  if (books.length === 0) {
+    return (
+      <div>
+        <h2>Books</h2>
+        <p>[nothing to show]</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2>Books</h2>

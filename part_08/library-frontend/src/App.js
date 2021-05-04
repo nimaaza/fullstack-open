@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import AuthorsTable from './components/AuthorsTable';
 import BooksTable from './components/BooksTable';
 import BookForm from './components/BookForm';
 
 import { ALL_AUTHORS, ALL_BOOKS } from './queries';
-import BirthYearForm from './components/BirthYearForm';
 import Notify from './components/Notify';
+import LoginForm from './components/LoginForm';
 
 const App = () => {
+  const [token, setToken] = useState(null);
   const [authors, setAuthors] = useState(null);
   const [books, setBooks] = useState(null);
   const [display, setDisplay] = useState('nothing');
@@ -18,6 +19,15 @@ const App = () => {
   const [getAuthors, returnedAuthors] = useLazyQuery(ALL_AUTHORS);
   const [getBooks, returnedBooks] = useLazyQuery(ALL_BOOKS);
 
+  const client = useApolloClient();
+
+  useEffect(() => {
+    const token = localStorage.getItem('library-user-token');
+    if (token) {
+      setToken(token);
+    }
+  }, []);
+
   useEffect(() => {
     if (display === 'authors' && returnedAuthors.data && returnedAuthors.data.allAuthors) {
       setAuthors(returnedAuthors.data.allAuthors);
@@ -25,6 +35,15 @@ const App = () => {
       setBooks(returnedBooks.data.allBooks);
     }
   }, [returnedAuthors.data, returnedBooks.data, display]);
+
+  const login = () => setDisplay('login');
+
+  const logout = () => {
+    setToken(null);
+    setDisplay('nothing');
+    localStorage.clear();
+    client.resetStore();
+  };
 
   const displayAuthors = () => {
     getAuthors();
@@ -49,14 +68,13 @@ const App = () => {
     setTimeout(() => setMessage(null), 6000);
   };
 
-  const displayData = () => {
+  const selectDisplay = () => {
+    if (display === 'login' && !token) {
+      return <LoginForm notify={displayMessage} setToken={setToken} />
+    }
+
     if (display === 'authors' && authors) {
-      return (
-        <div>
-          <AuthorsTable authors={authors} />
-          <BirthYearForm authors={authors} notify={displayMessage} />
-        </div>
-      );
+      return <AuthorsTable authors={authors} notify={displayMessage} loggedIn={token !== null} />
     }
 
     if (display === 'books' && books) {
@@ -64,7 +82,7 @@ const App = () => {
     }
 
     if (display === 'book_form') {
-      return <BookForm />
+      return <BookForm notify={displayMessage} />
     }
 
     return null;
@@ -75,8 +93,9 @@ const App = () => {
       <Notify message={message} />
       <button onClick={displayAuthors}>authors</button>
       <button onClick={displayBooks}>books</button>
-      <button onClick={addBook}>add book</button>
-      {displayData()}
+      {token ? <button onClick={addBook}>add book</button> : <button onClick={login}>log in</button>}
+      {token ? <button onClick={logout}>log out</button> : null}
+      {selectDisplay()}
     </div>
   );
 }
