@@ -15,6 +15,7 @@ const App = () => {
   const [books, setBooks] = useState(null);
   const [display, setDisplay] = useState('nothing');
   const [message, setMessage] = useState(null);
+  const [genre, setGenre] = useState(null);
 
   const [getAuthors, returnedAuthors] = useLazyQuery(ALL_AUTHORS);
   const [getBooks, returnedBooks] = useLazyQuery(ALL_BOOKS);
@@ -68,6 +69,37 @@ const App = () => {
     setTimeout(() => setMessage(null), 6000);
   };
 
+  const booksToDisplay = () => {
+    if (genre) {
+      return books.filter(book => book.genres.includes(genre));
+    }
+
+    return books;
+  };
+
+  const listOfGenres = () => {
+    if (books) {
+      const genres = ['All'];
+      books.forEach((book) => {
+        book.genres.forEach((genre) => {
+          if (!genres.includes(genre)) genres.push(genre);
+        })
+      });
+
+      return genres;
+    }
+
+    return [];
+  }
+
+  const selectGenreToDisplay = (genre) => {
+    if (genre === 'All') {
+      return () => setGenre(null);
+    }
+
+    return () => setGenre(genre);
+  };
+
   const selectDisplay = () => {
     if (display === 'login' && !token) {
       return <LoginForm notify={displayMessage} setToken={setToken} />
@@ -78,7 +110,7 @@ const App = () => {
     }
 
     if (display === 'books' && books) {
-      return <BooksTable books={books} />
+      return <BooksTable books={booksToDisplay()} />
     }
 
     if (display === 'book_form') {
@@ -95,7 +127,10 @@ const App = () => {
       <button onClick={displayBooks}>books</button>
       {token ? <button onClick={addBook}>add book</button> : <button onClick={login}>log in</button>}
       {token ? <button onClick={logout}>log out</button> : null}
+
       {selectDisplay()}
+
+      {listOfGenres().map(genre => <button key={genre} onClick={selectGenreToDisplay(genre)}>{genre}</button>)}
     </div>
   );
 }
