@@ -13,7 +13,7 @@ const AuthorsTable = ({ authors }) => {
         <tbody>
           {authors.map((author) => {
             return (
-              <tr key={author.name}>
+              <tr key={author.id}>
                 <td>{author.name}</td>
                 <td>{author.born}</td>
                 <td>{author.bookCount}</td>
