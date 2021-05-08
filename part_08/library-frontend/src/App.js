@@ -51,35 +51,29 @@ const App = () => {
     },
   });
 
-  const login = () => setDisplay('login');
-
   const logout = () => {
     setToken(null);
     setDisplay('nothing');
     localStorage.clear();
     client.resetStore();
   };
+  
+  const login = () => setDisplay('login');
 
-  const displayAuthors = () => {
-    setDisplay('authors');
-  };
+  const displayAuthors = () => setDisplay('authors');
 
-  const displayBooks = () => {
-    setDisplay('books');
-  }
+  const displayBooks = () => setDisplay('books');
 
   const addBook = () => setDisplay('book_form');
+
+  const recommend = () => setDisplay('recommend');
 
   const displayMessage = (notification) => {
     setMessage(notification);
     setTimeout(() => setMessage(null), 6000);
   };
 
-  const recommend = () => {
-    setDisplay('recommend');
-  };
-
-  const selectDisplay = () => {
+  const selectView = () => {
     if (display === 'login' && !token) {
       return <LoginForm notify={displayMessage} setToken={setToken} />
     }
@@ -104,7 +98,7 @@ const App = () => {
   };
 
   if (returnedAuthors.loading || returnedBooks.loading) {
-    return <p>loading</p>
+    return <p>loading...</p>
   }
 
   return (
@@ -116,7 +110,7 @@ const App = () => {
       {token ? <button onClick={recommend}>recommend</button> : null}
       {token ? <button onClick={logout}>log out</button> : null}
 
-      {selectDisplay()}
+      {selectView()}
     </div>
   );
 }
