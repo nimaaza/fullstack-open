@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 
 import AuthorsTable from './components/AuthorsTable';
 import BooksTable from './components/BooksTable';
 import BookForm from './components/BookForm';
 
-import { ALL_AUTHORS, ALL_BOOKS } from './queries';
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries';
 import Notify from './components/Notify';
 import LoginForm from './components/LoginForm';
 
@@ -40,6 +40,16 @@ const App = () => {
       setBooks(returnedBooks.data.allBooks);
     }
   }, [returnedAuthors.data, returnedBooks.data, display]);
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
+      const bookTitle = subscriptionData.data.bookAdded.title;
+      const author = subscriptionData.data.bookAdded.author.name;
+      const notification = `A new book has been added: ${bookTitle} by ${author}.`;
+      displayMessage(notification);
+    },
+  });
 
   const login = () => setDisplay('login');
 
@@ -92,6 +102,10 @@ const App = () => {
 
     return null;
   };
+
+  if (returnedAuthors.loading || returnedBooks.loading) {
+    return <p>loading</p>
+  }
 
   return (
     <div>
