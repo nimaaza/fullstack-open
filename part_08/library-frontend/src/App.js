@@ -23,6 +23,18 @@ const App = () => {
 
   const client = useApolloClient();
 
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => set.map(b => b.id).includes(object.id);
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS });
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: dataInStore.allBooks.concat(addedBook) },
+      });
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('library-user-token');
     if (token) {
@@ -43,11 +55,12 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData);
-      const bookTitle = subscriptionData.data.bookAdded.title;
-      const author = subscriptionData.data.bookAdded.author.name;
+      const bookAdded = subscriptionData.data.bookAdded;
+      const bookTitle = bookAdded.title;
+      const author = bookAdded.author.name;
       const notification = `A new book has been added: ${bookTitle} by ${author}.`;
       displayMessage(notification);
+      updateCacheWith(bookAdded);
     },
   });
 
@@ -57,7 +70,7 @@ const App = () => {
     localStorage.clear();
     client.resetStore();
   };
-  
+
   const login = () => setDisplay('login');
 
   const displayAuthors = () => setDisplay('authors');
