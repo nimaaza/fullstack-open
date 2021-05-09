@@ -1,39 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
-import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import AuthorsTable from './components/AuthorsTable';
 import BooksTable from './components/BooksTable';
 import BookForm from './components/BookForm';
 
-import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries';
+import { ALL_AUTHORS } from './queries';
 import Notify from './components/Notify';
 import LoginForm from './components/LoginForm';
 
 const App = () => {
   const [token, setToken] = useState(null);
   const [authors, setAuthors] = useState(null);
-  const [books, setBooks] = useState(null);
   const [display, setDisplay] = useState('nothing');
   const [message, setMessage] = useState(null);
 
   const [getAuthors, returnedAuthors] = useLazyQuery(ALL_AUTHORS);
-  const [getBooks, returnedBooks] = useLazyQuery(ALL_BOOKS);
-
   const client = useApolloClient();
-
-  const updateCacheWith = (addedBook) => {
-    const includedIn = (set, object) => set.map(b => b.id).includes(object.id);
-
-    const dataInStore = client.readQuery({ query: ALL_BOOKS });
-    if (!includedIn(dataInStore.allBooks, addedBook)) {
-      client.writeQuery({
-        query: ALL_BOOKS,
-        data: { allBooks: dataInStore.allBooks.concat(addedBook) },
-      });
-    }
-  };
 
   useEffect(() => {
     const token = localStorage.getItem('library-user-token');
@@ -44,25 +29,10 @@ const App = () => {
 
   useEffect(() => {
     getAuthors();
-    getBooks();
     if (returnedAuthors.data && returnedAuthors.data.allAuthors) {
       setAuthors(returnedAuthors.data.allAuthors);
     }
-    if (returnedBooks.data && returnedBooks.data.allBooks) {
-      setBooks(returnedBooks.data.allBooks);
-    }
-  }, [returnedAuthors.data, returnedBooks.data, display]);
-
-  useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      const bookAdded = subscriptionData.data.bookAdded;
-      const bookTitle = bookAdded.title;
-      const author = bookAdded.author.name;
-      const notification = `A new book has been added: ${bookTitle} by ${author}.`;
-      displayMessage(notification);
-      updateCacheWith(bookAdded);
-    },
-  });
+  }, [returnedAuthors.data, display]);
 
   const logout = () => {
     setToken(null);
@@ -95,12 +65,12 @@ const App = () => {
       return <AuthorsTable authors={authors} notify={displayMessage} loggedIn={token !== null} />
     }
 
-    if (display === 'books' && books) {
-      return <BooksTable books={books} recommend={false} />
+    if (display === 'books') {
+      return <BooksTable notify={displayMessage} recommend={false} />
     }
 
-    if (display === 'recommend' && books) {
-      return <BooksTable books={books} recommend={true} />
+    if (display === 'recommend') {
+      return <BooksTable notify={displayMessage} recommend={true} />
     }
 
     if (display === 'book_form') {
@@ -109,10 +79,6 @@ const App = () => {
 
     return null;
   };
-
-  if (returnedAuthors.loading || returnedBooks.loading) {
-    return <p>loading...</p>
-  }
 
   return (
     <div>

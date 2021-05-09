@@ -15,6 +15,7 @@ require('dotenv').config();
 const User = require('./models/user');
 const Book = require('./models/book');
 const Author = require('./models/author');
+const book = require('./models/book');
 
 const JWT_SECRET = 'WE_NEED_A_SECRET_HERE!';
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -95,7 +96,23 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: (root, args) => Book.find({}).populate("author"),
+    allBooks: async (root, args) => {
+      if (args.author && args.genre) {
+        const books = await Book.find({ genres: { $in: [args.genre] } }).populate("author");
+        return books.filter(book => book.author.name === args.author);
+      }
+
+      if (args.author) {
+        const books = await Book.find({}).populate("author");
+        return books.filter(book => book.author.name === args.author);
+      }
+
+      if (args.genre) {
+        return Book.find({ genres: { $in: [args.genre] } }).populate("author");
+      }
+
+      return Book.find({}).populate("author");
+    },
     allAuthors: () => Author.find({}),
     me: (root, args, { currentUser }) => currentUser,
   },

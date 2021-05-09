@@ -1,27 +1,63 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { ME } from '../queries';
+import { BOOK_ADDED, ALL_BOOKS, ME } from '../queries';
 
-const BooksTable = ({ books, recommend }) => {
+const BooksTable = ({ recommend, notify }) => {
+  const [books, setBooks] = useState(null);
   const [genre, setGenre] = useState(null);
   const [favoriteGenre, setFavoriteGenre] = useState(null);
 
-  const [getUser, result] = useLazyQuery(ME);
+  const [getUser, userResult] = useLazyQuery(ME);
+  const [getBooks, booksResult] = useLazyQuery(ALL_BOOKS);
+  const client = useApolloClient();
 
   useEffect(() => {
     getUser();
-    if (result.data && result.data.me !== null) {
-      setFavoriteGenre(result.data.me.favoriteGenre);
+    if (userResult.data && userResult.data.me !== null) {
+      setFavoriteGenre(userResult.data.me.favoriteGenre);
     }
-  }, [result.data]);
+  }, [userResult.data]);
+
+  useEffect(() => {
+    if (recommend) {
+      getBooks({
+        variables: { genre: favoriteGenre },
+      });
+    } else {
+      getBooks();
+    }
+
+    if (booksResult.data && booksResult.data.allBooks) {
+      setBooks(booksResult.data.allBooks);
+    }
+  }, [booksResult.data, favoriteGenre, recommend, genre]);
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const bookAdded = subscriptionData.data.bookAdded;
+      const bookTitle = bookAdded.title;
+      const author = bookAdded.author.name;
+      const notification = `A new book has been added: ${bookTitle} by ${author}.`;
+      notify(notification);
+      updateCacheWith(bookAdded);
+    },
+  });
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => set.map(b => b.id).includes(object.id);
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS });
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: dataInStore.allBooks.concat(addedBook) },
+      });
+    }
+  };
 
   const booksToDisplay = () => {
-    if (recommend) {
-      return books.filter(book => book.genres.includes(favoriteGenre));
-    }
-
     if (genre) {
       return books.filter(book => book.genres.includes(genre));
     }
@@ -68,7 +104,11 @@ const BooksTable = ({ books, recommend }) => {
     return null;
   };
 
-  if (booksToDisplay().length === 0) {
+  if (booksResult.loading) {
+    return <p>loading...</p>
+  }
+
+  if (!books || booksToDisplay().length === 0) {
     return (
       <div>
         {selectTitle()}
