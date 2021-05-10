@@ -5,9 +5,11 @@ import { eraseNotification, setNotification } from '../reducers/notificationRedu
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector(
-    ({ anecdotes }) => anecdotes.sort((a, b) => b.votes - a.votes)
-  );
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    return anecdotes
+      .filter(a => a.content.toLowerCase().includes(filter.trim().toLowerCase()))
+      .sort((a, b) => b.votes - a.votes)
+  });
 
   const vote = (id) => {
     const anecdote = anecdotes.find(a => a.id === id);
