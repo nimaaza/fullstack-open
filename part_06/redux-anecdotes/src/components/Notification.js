@@ -10,6 +10,10 @@ const Notification = () => {
     borderWidth: 1,
   };
 
+  if (!notification || notification.trim().length === 0) {
+    return null;
+  }
+
   return (
     <div style={style}>
       {notification}
