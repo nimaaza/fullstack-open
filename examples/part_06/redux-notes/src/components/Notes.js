@@ -13,7 +13,15 @@ const Note = ({ note, handleClick }) => {
 
 const Notes = () => {
   const dispatch = useDispatch();
-  const notes = useSelector(state => state);
+  const notes = useSelector(({ filter, notes }) => {
+    if (filter === 'ALL') {
+      return notes;
+    } else if (filter === 'IMPORTANT') {
+      return notes.filter(note => note.important);
+    } else if (filter === 'UNIMPORTANT') {
+      return notes.filter(note => !note.important);
+    }
+  });
 
   return (
     <ul>
