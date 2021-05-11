@@ -8,12 +8,7 @@ const reducer = (state = [], action) => {
 
     case 'VOTE': {
       const id = action.data.id;
-      const votedAnecdote = state.find(a => a.id === id);
-      const updatedAnecdote = {
-        ...votedAnecdote,
-        votes: votedAnecdote.votes + 1,
-      };
-
+      const updatedAnecdote = action.data;
       return state.map(a => a.id === id ? updatedAnecdote : a);
     }
 
@@ -33,10 +28,17 @@ export const initializeAnecdotes = () => {
   };
 };
 
-export const voteAnecdote = (id) => {
-  return {
-    type: 'VOTE',
-    data: { id },
+export const voteAnecdote = (anecdote) => {
+  return async (dispatch) => {
+    const votedAnecdote = {
+      ...anecdote,
+      votes: anecdote.votes + 1,
+    };
+    const updatedAnecdote = await anecdoteService.update(votedAnecdote);
+    dispatch({
+      type: 'VOTE',
+      data: updatedAnecdote,
+    });
   };
 };
 
