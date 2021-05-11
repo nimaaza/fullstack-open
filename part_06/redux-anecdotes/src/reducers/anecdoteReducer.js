@@ -31,10 +31,6 @@ export const initializeAnecdotes = () => {
       data: anecdotes,
     });
   };
-  // return {
-  //   type: 'INIT_ANECDOTES',
-  //   data: anecdotes,
-  // };
 };
 
 export const voteAnecdote = (id) => {
@@ -44,10 +40,13 @@ export const voteAnecdote = (id) => {
   };
 };
 
-export const createAnecdote = (anecdote) => {
-  return {
-    type: 'CREATE_NEW',
-    data: anecdote,
+export const createAnecdote = (content) => {
+  return async (dispatch) => {
+    const anecdote = await anecdoteService.createNew(content);
+    dispatch({
+      type: 'CREATE_NEW',
+      data: anecdote,
+    });
   };
 };
 
