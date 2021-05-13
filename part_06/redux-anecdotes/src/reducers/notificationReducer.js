@@ -1,4 +1,5 @@
 const initialNotification = 'Welcome to the most primitive app!';
+let lastTimeOut;
 
 const notificationReducer = (state = initialNotification, action) => {
   switch (action.type) {
@@ -11,8 +12,11 @@ const notificationReducer = (state = initialNotification, action) => {
 export const setNotification = (notification, timeOut) => {
   return (dispatch) => {
     dispatch({ type: 'SET', notification });
-    if (timeOut) {
-      setTimeout(() => dispatch({ type: 'ERASE' }), timeOut * 1000);
+    if (timeOut) { 
+      if (lastTimeOut) {
+        clearTimeout(lastTimeOut);
+      }
+      lastTimeOut = setTimeout(() => dispatch({ type: 'ERASE' }), timeOut * 1000);
     }
   };
 };
