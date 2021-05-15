@@ -58,26 +58,30 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  // const [content, setContent] = useState('');
-  // const [author, setAuthor] = useState('');
-  // const [info, setInfo] = useState('');
   const [handled, setHandled] = useState(false);
 
   const content = useField('text');
   const author = useField('text');
   const info = useField('text');
-
+  const submit = useField('submit');
+  const reset = useField('button');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content: content.value,
-      author: author.value,
-      infor: info.value,
+      content: content.props.value,
+      author: author.props.value,
+      infor: info.props.value,
       votes: 0,
     });
     props.notify('A new anecdote was added!', 10000);
     setHandled(true);
+  };
+
+  const resetForm = () => {
+    content.setValue('');
+    author.setValue('');
+    info.setValue('');
   };
 
   if (handled) {
@@ -88,10 +92,13 @@ const CreateNew = (props) => {
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
-        <div>content <input {...content} /></div>
-        <div>author <input {...author} /></div>
-        <div>info <input {...info} /></div>
-        <button>create</button>
+        <div>content <input {...content.props} /></div>
+        <div>author <input {...author.props} /></div>
+        <div>info <input {...info.props} /></div>
+        <div>
+          <input {...submit.props} value='create' />
+          <input {...reset.props} value='reset' onClick={resetForm} />
+        </div>
       </form>
     </div>
   );

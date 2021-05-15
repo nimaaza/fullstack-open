@@ -6,8 +6,11 @@ export const useField = (type) => {
   const onChange = ({ target }) => setValue(target.value);
 
   return {
-    type,
-    value,
-    onChange,
+    props: {
+      type,
+      value,
+      onChange,
+    },
+    setValue,
   };
 };
