@@ -1,0 +1,18 @@
+{
+  "name": "part_09",
+  "version": "1.0.0",
+  "description": "Example code from part 9",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts-node": "ts-node"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.11.3",
+    "ts-node": "^10.3.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4"
+  }
+}
