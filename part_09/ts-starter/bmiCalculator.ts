@@ -1,3 +1,24 @@
+interface HealthMetrics {
+  height: number,
+  weight: number,
+};
+
+const parseBmiArguments = (args: Array<string>): HealthMetrics => {
+  if (args.length < 4 || args.length > 4) throw new Error('Wrong number of arguments.');
+
+  const height: number = Number(args[2]);
+  const weight: number = Number(args[3]);
+
+  if (!isNaN(height) && !isNaN(weight)) {
+    return {
+      height: height,
+      weight: weight,
+    }
+  } else {
+    throw new Error('Wrong type of arguments.')
+  }
+};
+
 const calculateBmi = (height: number, weight:number): string => {
   const bmi: number = weight / (height * height) * 10000;
 
@@ -20,4 +41,9 @@ const calculateBmi = (height: number, weight:number): string => {
   }
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  const { height, weight } = parseBmiArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch(error) {
+  console.error(error.message);
+}
