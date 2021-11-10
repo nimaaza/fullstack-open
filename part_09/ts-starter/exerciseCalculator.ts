@@ -1,7 +1,7 @@
 interface Training {
   target: number,
   hours: Array<number>,
-};
+}
 
 interface TrainingEvaluation {
   periodLength: number,
@@ -11,28 +11,28 @@ interface TrainingEvaluation {
   ratingDescription: string,
   target: number,
   average: number,
-};
+}
 
 const parseTrainingArguments = (args: Array<string>): Training => {
-  if (args.length < 4) {    
+  if (args.length < 4) {
     throw new Error('Number of arguments can\'t be corrent');
   }
 
   const trainingArgs: Array<number> = args.slice(2).map(Number);
 
   if (trainingArgs.some(e => isNaN(Number(e)))) {
-    throw new Error('All arguments must be numbers.')
+    throw new Error('All arguments must be numbers.');
   }
 
   return {
     target: trainingArgs[0],
     hours: trainingArgs.slice(1),
-  }
+  };
 };
 
 const calculateExercises = (dailyHours: Array<number>, target: number): TrainingEvaluation => {
   const successes: number = dailyHours.reduce((sum, element) => element >= target ? sum + 1 : sum, 0);
-  
+
   let rating: number, description: string;
 
   if (successes === dailyHours.length) {
@@ -52,7 +52,10 @@ const calculateExercises = (dailyHours: Array<number>, target: number): Training
       break;
     case 1:
       description = 'you need to work out more';
-  };
+      break;
+    default:
+      description = 'you have weird training habits';
+  }
 
   return {
     periodLength: dailyHours.length,
@@ -69,7 +72,9 @@ try {
   const { target, hours } = parseTrainingArguments(process.argv);
   console.log(calculateExercises(hours, target));
 } catch (error) {
-  console.error(error.message);
+  if (error instanceof Error) {
+    console.error(error.message);
+  }
 }
 
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
