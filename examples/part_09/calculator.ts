@@ -1,7 +1,7 @@
 type Operation = 'multiply' | 'add' | 'divide';
 
-// const calcultor = (a: number, b: number, op: Operation): number | string => {
-// // const calcultor = (a: number, b: number, op: Operation): number => {
+// const calculator = (a: number, b: number, op: Operation): number | string => {
+// // const calculator = (a: number, b: number, op: Operation): number => {
 //   if (op === 'multiply') {
 //     return a * b;
 //   } else if (op === 'add') {
@@ -12,11 +12,11 @@ type Operation = 'multiply' | 'add' | 'divide';
 //   }
 // };
 
-// calcultor(1, 4, 'yolo');
+// calculator(1, 4, 'yolo');
 
 type Result = number;
 
-const calcultor = (a: number, b: number, op: Operation) : Result => {
+const calculator = (a: number, b: number, op: Operation) : Result => {
   switch(op) {
     case 'multiply':
       return a * b;
@@ -31,7 +31,9 @@ const calcultor = (a: number, b: number, op: Operation) : Result => {
 };
 
 try {
-  console.log(calcultor(1, 5, 'divide'));
+  console.log(calculator(1, 5, 'divide'));
 } catch (e: any) {
   console.log('Something went wrong: ', e.message);
 }
+
+export { calculator };
