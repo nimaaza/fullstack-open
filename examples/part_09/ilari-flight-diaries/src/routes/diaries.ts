@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import express from 'express';
 import diaryService from '../services/diaryServices';
+import toNewDiaryEntry from '../utils';
 
 const router = express.Router();
 
@@ -20,15 +19,18 @@ router.get('/', (_req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { date, weather, visibility, comment } = req.body;
-  const newDiaryEntry = diaryService.addEntry({
-    date,
-    weather,
-    visibility,
-    comment,
-  });
+  try {
+    const newDiaryEntry = toNewDiaryEntry(req.body);
+    const addedEntry = diaryService.addEntry(newDiaryEntry);
+    res.json(addedEntry);
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
 
-  res.json(newDiaryEntry);
+    res.status(400).send(errorMessage);
+  }
 });
 
 export default router;
