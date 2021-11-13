@@ -1,8 +1,12 @@
-import { NewPatient } from "./types";
+import { Gender, NewPatient } from "./types";
 
 const isString = (s: unknown): s is string => {
   return typeof (s) === 'string' || s instanceof String;
 }
+
+const isGender = (object: any): object is Gender => {
+  return Object.values(Gender).includes(object);
+};
 
 const parseName = (object: any): string => {
   if (!object.name || !isString(object.name)) {
@@ -28,8 +32,8 @@ const parseSsn = (object: any): string => {
   return object.ssn;
 };
 
-const parseGender = (object: any): string => {
-  if (!object.gender || !isString(object.gender)) {
+const parseGender = (object: any): Gender => {
+  if (!object.gender || !isGender(object.gender)) {
     throw new Error('Patient has no valid gender.');
   }
 

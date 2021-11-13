@@ -2,7 +2,7 @@ import { v1 as uuid } from 'uuid';
 
 import { NewPatient, Patient } from "../types";
 
-import patientsData from '../../data/patients.json';
+import { patientsData } from '../../data/patients';
 
 const getPatients = (): Omit<Patient, 'ssn'>[] => {
   return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => {
@@ -11,7 +11,7 @@ const getPatients = (): Omit<Patient, 'ssn'>[] => {
 };
 
 const addNewPatient = (newPatient: NewPatient): Patient => {
-  const addedPatient = {id: uuid(), ...newPatient};
+  const addedPatient = { id: uuid(), ...newPatient };
   patientsData.push(addedPatient);
   return addedPatient;
 };
