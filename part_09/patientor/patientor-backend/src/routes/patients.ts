@@ -4,6 +4,15 @@ import { toNewPatient } from '../utils';
 
 const router = express.Router();
 
+router.get('/:id', (req, res) => {
+  const patient = patientsServices.getPatient(req.params.id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 router.get('/', (_req, res) => {
   res.json(patientsServices.getPatients());
 });
