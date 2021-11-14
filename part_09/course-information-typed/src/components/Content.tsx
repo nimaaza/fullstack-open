@@ -2,12 +2,12 @@ import React from "react";
 
 import { CoursePart } from "../types";
 
+import Part from "./Part";
+
 const Contents = ({ courseParts }: {courseParts: CoursePart[]}) => {
   return (
     <div>
-      {courseParts.map(c => {
-        return <p key={c.name}>{c.name} {c.exerciseCount}</p>;
-      })}
+      {courseParts.map(part => <Part key={part.name} part={part} /> )}
     </div>
   );
 };
