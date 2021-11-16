@@ -21,7 +21,7 @@ const DisplayPatient = () => {
       dispatch(addPatient(patient));
     });
   }
-
+  
   return (
     <div>
       <h1>{state.patients[id].name}</h1>
@@ -34,7 +34,7 @@ const DisplayPatient = () => {
           <div key={e.id}>
             <p>{e.date} {e.description}</p>
             <ul>
-              {e.diagnosisCodes?.map(d => <li key={d}>{d}</li>)}
+              {e.diagnosisCodes?.map(d => <li key={d}>{d} {state.diagnoses[d].name}</li>)}
             </ul>
           </div>
         );
