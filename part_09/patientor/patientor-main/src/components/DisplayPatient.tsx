@@ -28,6 +28,17 @@ const DisplayPatient = () => {
       <p>gender: {state.patients[id].gender}</p>
       <p>ssn: {state.patients[id].ssn}</p>
       <p>occuption: {state.patients[id].occupation}</p>
+      <h2>Entries</h2>
+      {state.patients[id].entries.map(e => {
+        return (
+          <div key={e.id}>
+            <p>{e.date} {e.description}</p>
+            <ul>
+              {e.diagnosisCodes?.map(d => <li key={d}>{d}</li>)}
+            </ul>
+          </div>
+        );
+      })}
     </div>
   );
 };
