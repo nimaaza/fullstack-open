@@ -2,7 +2,7 @@ import { v1 as uuid } from 'uuid';
 
 import { NewPatient, Patient } from "../types";
 
-import { patientsData } from '../../data/patients';
+import patientsData from '../../data/patients';
 
 const getPatient = (id: string): Patient | undefined => {
   return patientsData.find(p => p.id === id);
