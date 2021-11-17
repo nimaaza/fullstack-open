@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from "./types";
+import { Gender, NewEntry, NewPatient } from "./types";
 
 const isString = (s: unknown): s is string => {
   return typeof (s) === 'string' || s instanceof String;
@@ -63,6 +63,46 @@ const toNewPatient = (object: any): NewPatient => {
   }
 };
 
+const toNewEntry = (entry: NewEntry): NewEntry => {
+  const newEntry = {
+    description: entry.description,
+    date: entry.date,
+    specialist: entry.specialist,
+    diagnosisCode: entry.diagnosisCodes,
+    type: '',
+  };
+
+  switch (entry.type) {
+    case 'HealthCheck':
+      return {
+        ...newEntry,
+        type: 'HealthCheck',
+        healthCheckRating: entry.healthCheckRating,
+      };
+    case 'Hospital':
+      return {
+        ...newEntry,
+        type: 'Hospital',
+        discharge: {
+          date: entry.discharge.date,
+          criteria: entry.discharge.criteria,
+        }
+      };
+    case 'OccupationalHealthcare':
+      return {
+        ...newEntry,
+        type: 'OccupationalHealthcare',
+        employerName: entry.employerName,
+        sickLeave: entry.sickLeave
+          ? { startDate: entry.sickLeave.startDate, endDate: entry.sickLeave.endDate }
+          : undefined,
+      };
+    default:
+      throw new Error('Malformed entry for patient.');
+  }
+};
+
 export {
   toNewPatient,
+  toNewEntry,
 };
