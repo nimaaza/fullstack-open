@@ -29,17 +29,32 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
       }}
       onSubmit={onSubmit}
       validate={values => {
-        const requiredError = "Field is required";
+        const requiredError = "Field is missing or not in correct format.";
         const errors: { [field: string]: string } = {};
+
         if (!values.description) {
           errors.name = requiredError;
         }
-        if (!values.date) {
-          errors.ssn = requiredError;
+        if (!values.date || !Date.parse(values.date)) {
+          errors.date = requiredError;
         }
         if (!values.specialist) {
-          errors.dateOfBirth = requiredError;
+          errors.specialist = requiredError;
         }
+        switch (values.type) {
+          case 'Hospital':
+            if (!Date.parse(values.discharge.date)) {
+              errors.discharge = requiredError;
+            }
+
+            if (!values.discharge.criteria) {
+              errors.discharge = requiredError;
+            }
+            break;
+          default:
+            break;
+        }
+
         return errors;
       }}
     >
