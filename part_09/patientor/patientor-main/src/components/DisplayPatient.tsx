@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import { useParams } from "react-router";
 
@@ -23,15 +23,14 @@ const DisplayPatient = () => {
     setError(undefined);
   };
 
-  useEffect(() => console.log(state.patients[id])
-  , [state]);
   const submitNewEntry = async (newEntry: NewEntry) => {
     try {
       const { data: addedEntry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
         newEntry
       );
-      
+      console.log('from front-end');
+      console.log(newEntry);
       dispatch(addEntrytoPatient(id, addedEntry));
       closeModal();
     } catch (e) {
