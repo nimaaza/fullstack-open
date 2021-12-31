@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
+import { Link, Redirect } from "react-router-native";
 
 import { styles } from "../themes";
 
@@ -13,8 +14,10 @@ const style = [styles.headerText, styles.lightColorText, customStyles.tabBox];
 
 const AppBarTab = (props) => {
   return (
-    <Pressable>
-      <Text style={style}>{props.text}</Text>
+    <Pressable onPress={() => <Redirect to={props.path} />}>
+      <Link to={props.path}>
+        <Text style={style}>{props.text}</Text>
+      </Link>
     </Pressable>
   );
 };

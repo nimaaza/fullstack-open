@@ -1,10 +1,10 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 
-import {theme} from "../themes";
+import { theme, styles } from "../themes";
 import AppBarTab from "./AppBarTab";
 
-const styles = StyleSheet.create({
+const customStyles = StyleSheet.create({
   container: {
     paddingTop: theme.sizes.appBarSize,
     backgroundColor: theme.colors.appBarColor,
@@ -13,8 +13,11 @@ const styles = StyleSheet.create({
 
 const AppBar = () => {
   return (
-    <View style={styles.container}>
-      <AppBarTab text="Repositories" />
+    <View style={[styles.row, customStyles.container]}>
+      <ScrollView horizontal={true}>
+        <AppBarTab text="Repositories" path="/" />
+        <AppBarTab text="Sign In" path="/signin" />
+      </ScrollView>
     </View>
   );
 };
