@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
 
   tagText: {
     backgroundColor: "#0366d6",
-    // width: "fit-content",
     alignSelf: "flex-start",
     paddingVertical: 4,
     paddingHorizontal: 8,
