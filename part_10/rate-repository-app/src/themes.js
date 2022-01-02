@@ -9,6 +9,7 @@ const theme = {
     appBarColor: "#24292e",
     lightTextColor: "white",
     darkTextColor: "black",
+    errorColor: "#d73a4a",
   },
 
   sizes: {
