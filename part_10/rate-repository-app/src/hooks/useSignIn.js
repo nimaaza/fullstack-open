@@ -6,7 +6,7 @@ const useSignIn = () => {
   const [mutate, result] = useMutation(AUTHORIZE, {});
 
   const signIn = async ({ username, password }) => {
-    return await mutate({
+    const { data } = await mutate({
       variables: {
         authorizeInput: {
           username,
@@ -14,6 +14,8 @@ const useSignIn = () => {
         },
       },
     });
+
+    return data;
   };
 
   return [signIn, result];
