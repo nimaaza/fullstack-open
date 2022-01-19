@@ -1,5 +1,10 @@
+import { useQuery } from "@apollo/client";
 import React from "react";
-import { Image, Text, View, StyleSheet } from "react-native";
+import { Image, Text, View, StyleSheet, Pressable } from "react-native";
+import { Link } from "react-router-native";
+import { useParams } from "react-router-native";
+import { GET_REPOSITORY } from "../graphql/queries";
+import * as Linking from "expo-linking";
 
 import { styles } from "../themes";
 
@@ -16,9 +21,12 @@ const customStyles = StyleSheet.create({
   bottomRowBoxes: {
     alignItems: "center",
   },
+  botton: {},
 });
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, single }) => {
+  const { id } = useParams();
+
   const withKSuffix = (n) => {
     if (n < 1000) {
       return String(n);
@@ -27,9 +35,27 @@ const RepositoryItem = ({ item }) => {
     }
   };
 
+  if (single) {
+    console.log(id);
+    const { data, loading } = useQuery(GET_REPOSITORY, {
+      variables: { repId: id },
+    });
+
+    if (loading) {
+      return <Text>loading...</Text>;
+    } else {
+      item = data.repository;
+    }
+  }
+
   return (
     <View style={[styles.column, customStyles.card]}>
       <View style={styles.row}>
+        {id ? null : (
+          <Link to={`/repository/${item.id}`}>
+            <Text>more</Text>
+          </Link>
+        )}
         <Image
           source={{ uri: item.ownerAvatarUrl }}
           style={[styles.smallAvatar, customStyles.logoMargin]}
@@ -64,6 +90,11 @@ const RepositoryItem = ({ item }) => {
           <Text>Rating</Text>
         </View>
       </View>
+      {single ? (
+        <Pressable onPress={() => Linking.openURL(item.url)}>
+          <Text style={[styles.tagText]}>Open in GitHub</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 };

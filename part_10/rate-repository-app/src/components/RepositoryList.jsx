@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { Redirect } from "react-router-native";
 
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
@@ -24,7 +25,11 @@ const RepositoryList = () => {
     <FlatList
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => <RepositoryItem item={item} />}
+      renderItem={({ item }) => (
+        <Pressable onPress={() => <Redirect to={`/repository/${item.id}`} />}>
+          <RepositoryItem item={item} />
+        </Pressable>
+      )}
     />
   );
 };
