@@ -1,16 +1,10 @@
 import React from "react";
-import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { FlatList, View, Pressable } from "react-native";
 import { Redirect } from "react-router-native";
 
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
-
-const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-    backgroundColor: "lightgray",
-  },
-});
+import { styles } from "../themes";
 
 const ItemSeparator = () => <View style={styles.separator} />;
 

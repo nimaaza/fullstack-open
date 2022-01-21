@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexShrink: 1,
-    width: "100%",
+    width: 512,
     marginHorizontal: "auto",
   },
 });

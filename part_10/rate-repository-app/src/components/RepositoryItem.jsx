@@ -7,6 +7,7 @@ import { GET_REPOSITORY } from "../graphql/queries";
 import * as Linking from "expo-linking";
 
 import { styles } from "../themes";
+import ReviewItems from "./ReviewItems";
 
 const customStyles = StyleSheet.create({
   card: {
@@ -21,7 +22,7 @@ const customStyles = StyleSheet.create({
   bottomRowBoxes: {
     alignItems: "center",
   },
-  botton: {},
+  
 });
 
 const RepositoryItem = ({ item, single }) => {
@@ -36,7 +37,6 @@ const RepositoryItem = ({ item, single }) => {
   };
 
   if (single) {
-    console.log(id);
     const { data, loading } = useQuery(GET_REPOSITORY, {
       variables: { repId: id },
     });
@@ -91,9 +91,13 @@ const RepositoryItem = ({ item, single }) => {
         </View>
       </View>
       {single ? (
-        <Pressable onPress={() => Linking.openURL(item.url)}>
-          <Text style={[styles.tagText]}>Open in GitHub</Text>
-        </Pressable>
+        <View>
+          <Pressable onPress={() => Linking.openURL(item.url)}>
+            <Text style={[styles.tagText]}>Open in GitHub</Text>
+          </Pressable>
+          <ReviewItems reviews={item.reviews.edges.map((item) => item.node)} />
+          
+        </View>
       ) : null}
     </View>
   );

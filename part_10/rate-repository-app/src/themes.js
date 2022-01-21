@@ -38,11 +38,16 @@ const theme = {
 
   fontWeights: {
     normal: "400",
-    bold: "700",
+    bold: 700,
   },
 };
 
 const styles = StyleSheet.create({
+  separator: {
+    height: 10,
+    backgroundColor: "lightgray",
+  },
+
   smallAvatar: {
     width: theme.sizes.smallAvatarSizes.width,
     height: theme.sizes.smallAvatarSizes.height,
