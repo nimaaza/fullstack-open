@@ -14,6 +14,7 @@ const apolloClient = createApolloClient(authStorage);
 const App = () => {
   return (
     <>
+      {" "}
       <NativeRouter>
         <ApolloProvider client={apolloClient}>
           <AuthStorageContext.Provider value={authStorage}>
@@ -21,7 +22,7 @@ const App = () => {
           </AuthStorageContext.Provider>
         </ApolloProvider>
       </NativeRouter>
-      <StatusBar style="auto" />
+      <StatusBar style="auto" />{" "}
     </>
   );
 };
