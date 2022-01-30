@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "eslint ./src/**/*.{js,jsx} App.js --no-error-on-unmatched-pattern",
-    "expo:install": "expo install"
+    "expo:install": "expo install",
+    "install:picker": "expo install @react-native-picker/picker"
   },
   "dependencies": {
     "-": "^0.0.1",
@@ -28,7 +29,8 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-web": "~0.13.12",
     "react-router-native": "^5.2.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "@react-native-picker/picker": "1.16.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
