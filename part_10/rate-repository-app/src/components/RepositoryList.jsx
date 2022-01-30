@@ -6,10 +6,12 @@ import { Picker } from "@react-native-picker/picker";
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 import { styles } from "../themes";
+import { TextInput } from "react-native-web";
 
 const RepositoryList = () => {
   const [repos, setRepos] = useState([]);
   const [selectedSorting, setSelectedSorting] = useState("latest");
+  const [searchText, setSearchText] = useState("");
 
   let querySorting;
   if (selectedSorting === "latest") {
@@ -19,7 +21,7 @@ const RepositoryList = () => {
   } else if (selectedSorting === "lowest") {
     querySorting = { orderDirection: "DESC", orderBy: "RATING_AVERAGE" };
   }
-
+  querySorting.keyword = searchText;
   const { repositories } = useRepositories(querySorting);
 
   useEffect(() => {
@@ -46,16 +48,19 @@ const RepositoryList = () => {
   const ItemSeparator = () => <View style={styles.separator} />;
 
   return (
-    <FlatList
-      data={repos}
-      ListHeaderComponent={RepositorySortPicker}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => (
-        <Pressable onPress={() => <Redirect to={`/repository/${item.id}`} />}>
-          <RepositoryItem item={item} />
-        </Pressable>
-      )}
-    />
+    <React.Fragment>
+      <TextInput onChange={({ target }) => setSearchText(target.value)} />
+      <FlatList
+        data={repos}
+        ListHeaderComponent={RepositorySortPicker}
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => <Redirect to={`/repository/${item.id}`} />}>
+            <RepositoryItem item={item} />
+          </Pressable>
+        )}
+      />
+    </React.Fragment>
   );
 };
 
